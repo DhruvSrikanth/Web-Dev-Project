@@ -30,8 +30,7 @@ CREATE TABLE announcement (
     announcement_id INT NOT NULL,
     announcement_title VARCHAR(64),
     announcement_desc VARCHAR(64),
-    announcement_date VARCHAR(64),
-    announcement_time VARCHAR(64),
+    announcement_date_time TEXT,
 
     PRIMARY KEY (announcement_id)
 );
@@ -43,8 +42,8 @@ CREATE TABLE assignment (
     assignment_title VARCHAR(64),
     assignment_desc VARCHAR(64),
     assignment_grade VARCHAR(64),
-    assignment_post_date VARCHAR(64),
-    assignment_due_date VARCHAR(64),
+    assignment_post_date TEXT,
+    assignment_due_date TEXT,
 
     PRIMARY KEY (assignment_id)
 );
