@@ -15,7 +15,7 @@ cur = conn.cursor()
 # State of the API
 state = "Teacher"
 
-# API Routes
+# Login API
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
@@ -49,6 +49,7 @@ def login():
             print(e)
             return render_template('login/login.html')
 
+# Signup API
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'GET':
@@ -60,7 +61,7 @@ def signup():
             id_ = int(request.form.get('id'))
             pwd = request.form.get('pwd')
             pwd_confirm = request.form.get('confirm_pwd')
-            account = request.form.get('account_type')
+            account = request.form.get('account_type').capitalize()
             a1 = request.form.get('security_question_1')
             a2 = request.form.get('security_question_2')
             a3 = request.form.get('security_question_3')
@@ -89,6 +90,7 @@ def signup():
             print(e)
             return render_template('login/signup.html')
 
+# Signup Helper Functions
 def verify_email(email):
     pattern = re.compile("[a-z0-9]+@[a-z]+\.edu")
     return bool(pattern.match(email))
@@ -114,14 +116,65 @@ def verify_unqiue_entries(email, id_):
 
     return len(r1) == 0 and len(r2) == 0
 
-@app.route('/forgot', methods=['GET'])
+# Forgot Password API
+@app.route('/forgot', methods=['GET', 'POST'])
 def forgot():
-    return render_template('login/forget_pwd.html')
+    if request.method == 'GET':
+        return render_template('login/forget_pwd.html')
+    else:
+        try:
+            email = request.form.get('email')
+            a1 = request.form.get('security_question_1')
+            a2 = request.form.get('security_question_2')
+            a3 = request.form.get('security_question_3')
 
-@app.route('/newpwd', methods=['GET'])
+            sql_query = f"SELECT * FROM user WHERE user_email = '{email}' AND user_a1 = '{a1}' AND user_a2 = '{a2}' AND user_a3 = '{a3}';"
+            cur.execute(sql_query)
+            result = cur.fetchall()
+
+
+            if len(result) == 1:
+                return render_template('login/new_pwd.html')
+            else:
+                return render_template('login/forget_pwd.html')
+
+        except Exception as e:
+            print(e)
+            return render_template('login/forget_pwd.html')
+
+# New Password API
+@app.route('/newpwd', methods=['GET', 'POST'])
 def new_pwd():
-    return render_template('login/new_pwd.html')
+    if request.method == 'GET':
+        return render_template('login/new_pwd.html')
+    else:
+        try:
+            email = request.form.get('email')
+            pwd = request.form.get('pwd')
+            pwd_confirm = request.form.get('confirm_pwd')
 
+
+            sql_query = f"SELECT * FROM user WHERE user_email = '{email}';"
+            cur.execute(sql_query)
+            result = cur.fetchall()
+
+            unique_flag = len(result) == 1
+            correct_email_flag = verify_email(email) and unique_flag
+            correct_password_flag = verify_confirmed_password(pwd, pwd_confirm) and verify_password(pwd)
+
+            if correct_password_flag and correct_email_flag:
+                sql_query = f"UPDATE user SET user_pwd = '{pwd}' WHERE user_email='{email}';"
+                cur.execute(sql_query)
+                conn.commit()
+
+                return render_template('login/login.html')
+            else:
+                return render_template('login/new_pwd.html')
+        except Exception as e:
+            print(e)
+            return render_template('login/new_pwd.html')
+
+# Dashboard API
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     global state

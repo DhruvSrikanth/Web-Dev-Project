@@ -17,14 +17,17 @@
             <div class="grid-element-sidebar"></div>
             <div class="grid-element-main">
                 <div class="form">
-                    <form action="/" method="GET">
+                    <form action="/newpwd" method="POST">
                         <h3>Please provide the following information:</h3>
+
+                        <label for="email">Email:</label><br/>
+                        <input type="text" id="email" name="email" required/><br/><br/>
                         
                         <label for="pwd">New Password:</label><br/>
-                        <input type="text" id="pwd" name="pwd" required/><br/><br/>
+                        <input type="password" id="pwd" name="pwd" required/><br/><br/>
         
                         <label for="confirm_pwd">Confirm Password:</label><br/>
-                        <input type="text" id="confirm_pwd" name="confirm_pwd" required/><br/><br/>
+                        <input type="password" id="confirm_pwd" name="confirm_pwd" required/><br/><br/>
         
                         <input type="submit" value="Submit"></input>
                     </form>
