@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Settings</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="Canvas Settings">
+        <meta name="keywords" content="canvas, settings, admin">
+        <meta name="authors" content="Dhruv Srikanth, Redon Kurti, Vidur Subaiah">
+        <link rel="stylesheet" href="../../css/page_template.css">
+    </head>
+    <body>
+        <div class="grid-container">
+            <div class="grid-element-header">
+                <h1>Canvas</h1>
+            </div>
+            <div class="grid-element-sidebar">
+                <a href="/myaccount">My Account</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/courses">Courses</a>
+                <a href="/settings">Settings</a>
+                <a href="/">Logout</a>
+            </div>
+            <div class="grid-element-main">
+                <h3> 
+                    Settings
+                </h3>
+
+                <div class="grid-element">
+                    <h4>
+                        Registered Users (Active/Inactive):
+                    </h4>
+                    <button type="button">Active Users</button>
+                    <button type="button">Inactive Users</button>
+                    <ul>
+
+                    </ul>
+                </div>
+
+                <div class="form">
+                    <form method="GET">
+                        <h4>
+                            User Search:
+                        </h4>
+                            <label for="user_search">Name/Email</label><br/>
+                            <input type="text" id="user_search" name="user_search" required><br/><br/>
+                            <input type="submit" value="Search"></input>
+                    </form>
+                </div>
+
+                <div class="grid-element">
+                    <ul>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="grid-element-extra">
+            </div>
+            <div class="grid-element-footer">
+            </div>
+        </div>
+    </body>
+</html>
