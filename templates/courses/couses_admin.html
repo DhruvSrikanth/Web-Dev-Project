@@ -4,10 +4,10 @@
     <head>
         <title>Courses</title>
         <meta charset="UTF-8">
-        <meta name="description" content="Canvas Page Template">
-        <meta name="keywords" content="canvas, html, template">
+        <meta name="description" content="Canvas Page Courses">
+        <meta name="keywords" content="canvas, html, courses">
         <meta name="authors" content="Dhruv Srikanth, Redon Kurti, Vidur Subaiah">
-        <link rel="stylesheet" href="./page_template.css">
+        <link rel="stylesheet" href="../../css/page_template.css">
     </head>
     <body>
         <div class="grid-container">
@@ -15,11 +15,11 @@
                 <h1>Canvas</h1>
             </div>
             <div class="grid-element-sidebar">
-                <a href="/src/account.html">My Account</a>
-                <a href="/src/dashboard.html">Dashboard</a>
-                <a href="/src/courses.html">Courses</a>
-                <a href="/src/settings.html">Settings</a>
-                <a href="/src/logout.html">Logout</a>
+                <a href="/myaccount">My Account</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/courses">Courses</a>
+                <a href="/settings">Settings</a>
+                <a href="/">Logout</a>
             </div>
             <div class="grid-element-main">
                 <h3>
@@ -35,21 +35,21 @@
 
                 <div class="form">
                     <form>
-                        <label for="name">Name:</label><br/>
-                        <input type="text" id="name" name="name" required><br/><br/>
+                        <label class="name">Name:</label><br/>
+                        <input type="text" id="name" name="name" required/><br/><br/>
 
-                        <label for="textarea">Descripton:</label><br/>
+                        <label class="textarea">Descripton:</label><br/>
                         <textarea id="textarea" name="textarea" placeholder="Enter description..."></textarea>
                         <br/><br/>
 
-                        <label for="points">Capacity:</label><br/>
-                        <input type="text" id="points" name="points" required><br/><br/>
+                        <label class="points">Capacity:</label><br/>
+                        <input type="text" id="points" name="points" required/><br/><br/>
 
-                        <label for="teacher">Teacher:</label><br><br>
+                        <label class="teacher">Teacher:</label><br/><br/>
                         <select id="teacher" name="teacher">
                             <option value="teacher_1">Teacher_1</option>
                             <option value="teacher_2">Teacher_2</option>
-                        </select><br><br>
+                        </select><br/><br/>
                         <input type="submit" value="Create Course"></input>
                     </form>
                 </div>
