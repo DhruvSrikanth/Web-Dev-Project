@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS user;
 CREATE TABLE user (
     u_id INT NOT NULL,
     user_full_name VARCHAR(64),
-    user_email VARCHAR(64),
+    user_email VARCHAR(64) UNIQUE NOT NULL,
     user_pwd VARCHAR(64),
     user_type VARCHAR(64),
     user_a1 VARCHAR(64),

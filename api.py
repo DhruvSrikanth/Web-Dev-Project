@@ -13,7 +13,10 @@ conn = sqlite3.connect('./database/database.db', check_same_thread=False)
 cur = conn.cursor()
 
 # State of the API
-state = "Teacher"
+state = "None"
+
+# ID of user
+user_id_ = -1
 
 # Login API
 @app.route('/', methods=['GET', 'POST'])
@@ -35,8 +38,12 @@ def login():
                 flag = True
 
             if flag:
+                global user_id_
+                user_id_ = result[0][0]
+
                 global state
                 state = result[0][4]
+                
                 if state == "Student":
                     return render_template('dashboard/dashboard_student.html')
                 elif state == "Teacher":
@@ -187,6 +194,8 @@ def dashboard():
 
 @app.route('/courses', methods=['GET'])
 def courses():
+    global state
+    global user_id_
     if state == "Teacher" or state == "Student":
         return render_template('courses/courses.html')
     elif state == "Admin":
@@ -194,6 +203,7 @@ def courses():
 
 @app.route('/course', methods=['GET'])
 def course():
+    global state
     if state == "Student":
         return render_template('courses/course_student.html')
     elif state == "Teacher":
