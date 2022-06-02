@@ -223,15 +223,29 @@ def courses():
 
             return render_template('courses/courses_admin.html', courses=courses, teachers=teachers)
         else:
-            course_name = request.form.get('course_name')
-            course_teacher = request.form.get('course_teacher')
-            course_id = request.form.get('course_id')
+            course_name = request.form.get('name')
+            course_teacher = request.form.get('teacher')
+            course_desc = request.form.get('desc')
+            course_capacity = int(request.form.get('capacity'))
 
-            sql_query = f"INSERT INTO course (course_name, course_teacher, course_id) VALUES ('{course_name}', '{course_teacher}', '{course_id}');"
+            sql_query = "SELECT course_id FROM course;"
+            cur.execute(sql_query)
+            course_ids = cur.fetchall()
+            course_id = len(course_ids) + 1
+            
+            sql_query = f"INSERT INTO course (course_id, course_name, course_desc, course_capacity, course_teacher) VALUES ('{course_id}', '{course_name}', '{course_desc}', {course_capacity}, {course_teacher});"
             cur.execute(sql_query)
             conn.commit()
 
-            return render_template('courses/courses_admin.html')
+            sql_query = f"SELECT course_name, course_id FROM course;"
+            cur.execute(sql_query)
+            courses = cur.fetchall()
+            
+            sql_query = f"SELECT user_full_name, u_id FROM user WHERE user_type = 'Teacher';"
+            cur.execute(sql_query)
+            teachers = cur.fetchall()
+
+            return render_template('courses/courses_admin.html', courses=courses, teachers=teachers)
 
 @app.route('/course', methods=['GET'])
 def course():
