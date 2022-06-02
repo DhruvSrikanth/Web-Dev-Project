@@ -3,6 +3,8 @@ import json
 import sqlite3
 import sys
 
+from config import config
+
 app = Flask(__name__)
 
 # Database Connection
@@ -127,4 +129,6 @@ def settings():
 
 
 if __name__ == '__main__':
-    app.run(host="localhost", port=5000, debug=True)
+    app.run(host=config['host'], 
+            port=config['port'], 
+            debug=config['debug'])
