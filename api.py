@@ -1,25 +1,118 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, flash
 import json
 import sqlite3
 import sys
+import re
 
 from config import config
 
 app = Flask(__name__)
 
 # Database Connection
-# conn = sqlite3.connect('')
-# cur = conn.cursor()
+conn = sqlite3.connect('./database/database.db', check_same_thread=False)
+cur = conn.cursor()
 
+# State of the API
 state = "Teacher"
 
-@app.route('/', methods=['GET'])
+# API Routes
+@app.route('/', methods=['GET', 'POST'])
 def login():
-    return render_template('login/login.html')
+    if request.method == 'GET':
+        return render_template('login/login.html')
+    else:
+        flag = False
 
-@app.route('/signup', methods=['GET'])
+        try:
+            username = request.form.get('user_name')
+            password = request.form.get('pwd')
+
+            sql_query = f"SELECT * FROM user WHERE user_email = '{username}' AND user_pwd = '{password}';"
+            cur.execute(sql_query)
+            result = cur.fetchall()
+
+            if len(result) == 1:
+                flag = True
+
+            if flag:
+                global state
+                state = result[0][4]
+                if state == "Student":
+                    return render_template('dashboard/dashboard_student.html')
+                elif state == "Teacher":
+                    return render_template('dashboard/dashboard_teacher.html')
+                elif state == "Admin":
+                    return render_template('dashboard/dashboard_admin.html')
+            else:
+                return render_template('login/login.html')            
+        except Exception as e:
+            print(e)
+            return render_template('login/login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    return render_template('login/signup.html')
+    if request.method == 'GET':
+        return render_template('login/signup.html')
+    else:
+        try:
+            fullname = request.form.get('full_name')
+            email = request.form.get('email')
+            id_ = int(request.form.get('id'))
+            pwd = request.form.get('pwd')
+            pwd_confirm = request.form.get('confirm_pwd')
+            account = request.form.get('account_type')
+            a1 = request.form.get('security_question_1')
+            a2 = request.form.get('security_question_2')
+            a3 = request.form.get('security_question_3')
+
+            correct_entry_flag = False
+            unique_flag = False
+
+            # Verify password
+            # Verify confirmed password
+            # Verify email
+            # Verify id
+            correct_entry_flag = verify_email(email) and verify_id(id_) and verify_confirmed_password(pwd, pwd_confirm) and verify_password(pwd)
+
+            # Check if entries is unique
+            unique_flag = verify_unqiue_entries(email, id_)
+
+            if correct_entry_flag and unique_flag:
+                sql_query = f"INSERT INTO user (u_id, user_full_name, user_email, user_pwd, user_type, user_a1, user_a2, user_a3) VALUES ('{id_}', '{fullname}', '{email}', '{pwd}', '{account}', '{a1}', '{a2}', '{a3}');"
+                cur.execute(sql_query)
+                conn.commit()
+
+                return render_template('login/login.html')
+            else:
+                return render_template('login/signup.html')
+        except Exception as e:
+            print(e)
+            return render_template('login/signup.html')
+
+def verify_email(email):
+    pattern = re.compile("[a-z0-9]+@[a-z]+\.edu")
+    return bool(pattern.match(email))
+
+def verify_id(id_):
+    return type(id_) == int
+
+def verify_password(pwd):
+    pattern = re.compile("^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$")
+    return bool(pattern.match(pwd)) 
+
+def verify_confirmed_password(pwd, pwd_confirm):
+    return pwd == pwd_confirm
+
+def verify_unqiue_entries(email, id_):
+    sql_query = f"SELECT * FROM user WHERE user_email = '{email}';"
+    cur.execute(sql_query)
+    r1 = cur.fetchall()
+
+    sql_query = f"SELECT * FROM user WHERE u_id = '{id_}';"
+    cur.execute(sql_query)
+    r2 = cur.fetchall()
+
+    return len(r1) == 0 and len(r2) == 0
 
 @app.route('/forgot', methods=['GET'])
 def forgot():

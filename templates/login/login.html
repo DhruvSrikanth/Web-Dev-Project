@@ -20,12 +20,11 @@
                     <h3>Login to canvas with your username and password</h3>
                 </div>
                 <div class="form">
-                    <form action="/dashboard" method="GET">
+                    <form action="/" method="POST">
                         <label for="user_name">Username:</label><br/>
-                        <input type="text" id="user_name" name="user_name" required/><br/><br/>
+                        <input type="text" id="user_name" name="user_name" placeholder="Email ID" required/><br/><br/>
                         <label for="pwd">Password:</label><br/>
-                        <input type="text" id="pwd" name="pwd" required/><br/><br/>
-            
+                        <input type="password" id="pwd" name="pwd" placeholder="Password" required/><br/><br/>
                         <input type="submit" value="Login"></input>
                     </form>
                 </div>
