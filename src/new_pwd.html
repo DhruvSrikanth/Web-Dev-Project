@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>New Password</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="Canvas Create New Password">
+        <meta name="keywords" content="canvas, login, signup, reset, password">
+        <meta name="authors" content="Dhruv Srikanth, Redon Kurti, Vidur Subaiah">
+        <link rel="stylesheet" href="./page_template.css">
+    </head>
+    <body>
+        <div class="grid-container">
+            <div class="grid-element-header">
+                <h1>Canvas</h1>
+            </div>
+            <div class="grid-element-sidebar"></div>
+            <div class="grid-element-main">
+                <div class="form">
+                    <form action="/src/login.html" method="GET">
+                        <h3>Please provide the following information:</h3>
+                        
+                        <label for="pwd">New Password:</label><br>
+                        <input type="text" id="pwd" name="pwd" required><br><br>
+        
+                        <label for="confirm_pwd">Confirm Password:</label><br>
+                        <input type="text" id="confirm_pwd" name="confirm_pwd" required><br><br>
+        
+                        <input type="submit" value="Submit"></input>
+                    </form>
+                </div>
+            </div>
+            <div class="grid-element-footer">
+            </div>
+        </div>
+    </body>
+</html>

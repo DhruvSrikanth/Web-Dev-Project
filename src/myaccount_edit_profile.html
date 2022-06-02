@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Template</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="Canvas My Account Edit Profile">
+        <meta name="keywords" content="edit, profile, name, email, studentid">
+        <meta name="authors" content="Dhruv Srikanth, Redon Kurti, Vidur Subaiah">
+    </head>
+    <body>
+        <div class="grid-container">
+            <div class="grid-element-header">
+                <h1>Canvas</h1>
+            </div>
+            <div class="grid-element-sidebar">
+                <a href="/src/account.html">My Account</a>
+                <a href="/src/dashboard.html">Dashboard</a>
+                <a href="/src/courses.html">Courses</a>
+                <a href="/src/settings.html">Settings</a>
+                <a href="/src/logout.html">Logout</a>
+            </div>
+            <div class="grid-element-main">
+                <h3>
+                    My Account - Edit Profile
+                </h3>
+                <div class="form">
+                    <form action="/src/myaccount.html" method="GET">
+                        <h3>Edit your personal information:</h3>
+                        
+                        <label for="full_name">Full Name:</label><br>
+                        <input type="text" id="full_name" name="full_name" required><br><br>
+        
+                        <label for="email">Email:</label><br>
+                        <input type="text" id="email" name="email" required><br><br>
+        
+                        <label for="id">ID:</label><br>
+                        <input type="text" id="id" name="id" required><br><br>
+      
+                        <input type="submit" value="Save"></input>
+                    </form>
+                </div>
+            </div>
+            <div class="grid-element-extra">
+            </div>
+            <div class="grid-element-footer">
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Forgot Password</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="Canvas Reset Password">
+        <meta name="keywords" content="canvas, login, signup, reset, password">
+        <meta name="authors" content="Dhruv Srikanth, Redon Kurti, Vidur Subaiah">
+        <link rel="stylesheet" href="./page_template.css">
+    </head>
+    <body>
+        <div class="grid-container">
+            <div class="grid-element-header">
+                <h1>Canvas</h1>
+            </div>
+            <div class="grid-element-sidebar"></div>
+            <div class="grid-element-main">
+                <div class="form">
+                    <form action="/src/new_pwd.html" method="GET">
+                        <h3>Please provide the following information:</h3>
+                        
+                        <label for="email">Email:</label><br>
+                        <input type="text" id="email" name="email" required><br><br>
+        
+                        <h3>Answer the following security questions:</h3>
+                        <label for="security_question_1">What is your favorite color?</label><br><br>
+                        <input type="text" id="security_question_1" name="security_question_1" required><br><br>
+        
+                        <label for="security_question_2">What is your favorite food?</label><br><br>
+                        <input type="text" id="security_question_2" name="security_question_2" required><br><br>
+        
+                        <label for="security_question_3">What is your mother's maiden name?</label><br><br>
+                        <input type="text" id="security_question_3" name="security_question_3" required><br><br>
+        
+                        <input type="submit" value="Submit"></input>
+                    </form>
+                </div>
+            </div>
+            <div class="grid-element-footer"></div>
+        </div>
+    </body>
+</html>
