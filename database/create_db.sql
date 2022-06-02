@@ -18,9 +18,10 @@ CREATE TABLE course (
     course_id INT NOT NULL,
     course_name VARCHAR(64),
     course_desc VARCHAR(64),
-    course_capacity VARCHAR(64),
-    course_teacher VARCHAR(64),
+    course_capacity INT,
+    course_teacher INT,
 
+    FOREIGN KEY (course_teacher) REFERENCES user(u_id),
     PRIMARY KEY (course_id)
 );
 
@@ -41,7 +42,7 @@ CREATE TABLE assignment (
     assignment_id INT NOT NULL,
     assignment_title VARCHAR(64),
     assignment_desc VARCHAR(64),
-    assignment_grade VARCHAR(64),
+    assignment_total_points INT,
     assignment_post_date TEXT,
     assignment_due_date TEXT,
 
@@ -61,7 +62,7 @@ CREATE TABLE user_course (
 
 
 DROP TABLE IF EXISTS course_announcement;
-CREATE TABLE cource_announcement (
+CREATE TABLE course_announcement (
     announcement_id INT NOT NULL,
     course_id INT NOT NULL,
 
@@ -79,4 +80,15 @@ CREATE TABLE course_assignment (
     FOREIGN KEY (assignment_id) REFERENCES assignment(assignment_id),
     FOREIGN KEY (course_id) REFERENCES course(course_id),
     PRIMARY KEY(course_id, assignment_id)
+);
+
+
+DROP TABLE IF EXISTS user_assignment;
+CREATE TABLE user_assignment (
+    u_id INT NOT NULL,
+    assignment_id INT NOT NULL,
+
+    FOREIGN KEY (assignment_id) REFERENCES assignment(assignment_id),
+    FOREIGN KEY (u_id) REFERENCES user(u_id),
+    PRIMARY KEY(u_id, assignment_id)
 );
