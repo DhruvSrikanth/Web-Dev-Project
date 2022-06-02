@@ -64,6 +64,7 @@ def signup():
     else:
         try:
             fullname = request.form.get('full_name')
+            fullname = ' '.join(map(str.capitalize, fullname.split(' ')))
             email = request.form.get('email')
             id_ = int(request.form.get('id'))
             pwd = request.form.get('pwd')
@@ -192,14 +193,45 @@ def dashboard():
     elif state == "Admin":
         return render_template('dashboard/dashboard_admin.html')
 
-@app.route('/courses', methods=['GET'])
+@app.route('/courses', methods=['GET', 'POST'])
 def courses():
     global state
     global user_id_
-    if state == "Teacher" or state == "Student":
-        return render_template('courses/courses.html')
+    if state == "Student":
+        sql_query = f"SELECT course_name, course.course_id FROM course JOIN user_course ON course.course_id = user_course.course_id WHERE user_course.u_id = '{user_id_}';"
+        cur.execute(sql_query)
+        courses = cur.fetchall()
+
+        return render_template('courses/courses.html', courses=courses)
+
+    elif state == "Teacher":
+        sql_query = f"SELECT course_name, course_id FROM course WHERE course_teacher = '{user_id_}';"
+        cur.execute(sql_query)
+        courses = cur.fetchall()
+
+        return render_template('courses/courses.html', courses=courses)
+
     elif state == "Admin":
-        return render_template('courses/courses_admin.html')
+        if request.method == 'GET':
+            sql_query = f"SELECT course_name, course_id FROM course;"
+            cur.execute(sql_query)
+            courses = cur.fetchall()
+            
+            sql_query = f"SELECT user_full_name, u_id FROM user WHERE user_type = 'Teacher';"
+            cur.execute(sql_query)
+            teachers = cur.fetchall()
+
+            return render_template('courses/courses_admin.html', courses=courses, teachers=teachers)
+        else:
+            course_name = request.form.get('course_name')
+            course_teacher = request.form.get('course_teacher')
+            course_id = request.form.get('course_id')
+
+            sql_query = f"INSERT INTO course (course_name, course_teacher, course_id) VALUES ('{course_name}', '{course_teacher}', '{course_id}');"
+            cur.execute(sql_query)
+            conn.commit()
+
+            return render_template('courses/courses_admin.html')
 
 @app.route('/course', methods=['GET'])
 def course():

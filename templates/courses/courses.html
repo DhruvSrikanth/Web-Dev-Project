@@ -25,8 +25,11 @@
                     Courses
                 </h3>
                 <ul>
-                    <li><a href="/course">Course 1</a></li>
-                    <li>Course 2</li>
+                    {% for course in courses %}
+                        <li>
+                            <a href="/courses/{{course[1]}}">{{course[0]}}</a>
+                        </li>
+                    {% endfor %}
                 </ul>
 
             </div>
