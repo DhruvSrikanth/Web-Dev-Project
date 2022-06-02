@@ -2,23 +2,12 @@
 
 <html>
     <head>
-        
-    </head>
-    <body>
-
-    </body>
-</html>
-
-<!DOCTYPE html>
-
-<html>
-    <head>
         <title>Login</title>
         <meta charset="UTF-8">
         <meta name="description" content="Canvas Login">
         <meta name="keywords" content="canvas, login, signup">
         <meta name="authors" content="Dhruv Srikanth, Redon Kurti, Vidur Subaiah">
-        <link rel="stylesheet" href="./page_template.css">
+        <link rel="stylesheet" href="../../css/page_template.css">
     </head>
     <body>
         <div class="grid-container">
@@ -31,18 +20,22 @@
                     <h3>Login to canvas with your username and password</h3>
                 </div>
                 <div class="form">
-                    <form action="/src/dashboard.html" method="GET">
-                        <label for="user_name">Username:</label><br>
-                        <input type="text" id="user_name" name="user_name" required><br><br>
-                        <label for="pwd">Password:</label><br>
-                        <input type="text" id="pwd" name="pwd" required><br><br>
+                    <form action="/dashboard" method="GET">
+                        <label for="user_name">Username:</label><br/>
+                        <input type="text" id="user_name" name="user_name" required/><br/><br/>
+                        <label for="pwd">Password:</label><br/>
+                        <input type="text" id="pwd" name="pwd" required/><br/><br/>
             
                         <input type="submit" value="Login"></input>
                     </form>
                 </div>
                 <div class="buttons">
-                    <button type="button">Forgot Password</button>
-                    <button type="button">Signup</button>
+                    <a href="/forgot">
+                        <button type="button">Forgot Password</button>
+                    </a>
+                    <a href="/signup">
+                        <button type="button">Signup</button>
+                    </a>
                 </div>
             </div>
             <div class="grid-element-footer"></div>
