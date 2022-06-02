@@ -253,13 +253,21 @@ def course(id):
     global user_id_
 
     if state == "Student":
-        
-        return render_template('courses/course_student.html')
-    elif state == "Teacher":
-        return render_template('courses/course_teacher.html')
+        sql_query = f"SELECT * FROM course WHERE course_id = '{id}';"
+        cur.execute(sql_query)
+        course = cur.fetchall()
 
-@app.route('/course/announcement', methods=['GET'])
-def announcements():
+        return render_template('courses/course_student.html', course=course)
+    elif state == "Teacher":
+        sql_query = f"SELECT * FROM course WHERE course_id = '{id}';"
+        cur.execute(sql_query)
+        course = cur.fetchall()
+
+        sql_query = f"SELECT * FROM course WHERE course_id = '{id}';"
+        return render_template('courses/course_teacher.html', course=course)
+
+@app.route('/course/<id>/announcement', methods=['GET'])
+def announcements(id):
     global state
     if state == "Student":
         return render_template('announcements/announcements_student.html')
