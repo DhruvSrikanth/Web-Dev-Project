@@ -247,10 +247,13 @@ def courses():
 
             return render_template('courses/courses_admin.html', courses=courses, teachers=teachers)
 
-@app.route('/course', methods=['GET'])
-def course():
+@app.route('/course/<id>', methods=['GET'])
+def course(id):
     global state
+    global user_id_
+
     if state == "Student":
+        
         return render_template('courses/course_student.html')
     elif state == "Teacher":
         return render_template('courses/course_teacher.html')
