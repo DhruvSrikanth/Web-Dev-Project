@@ -617,18 +617,51 @@ def edit_profile():
         else:
             return render_template('myaccount/myaccount_edit_profile.html', admin_flag = admin_flag)
 
-@app.route('/myaccount/change_password', methods=['GET'])
+@app.route('/myaccount/change_password', methods=['GET', 'POST'])
 def change_password():
     global state
-    if state == "Student" or state == "Teacher":
-        return render_template('myaccount/myaccount_change_password.html')
+    global user_id_
+    
+    admin_flag = state == "Admin"
+
+    if request.method == 'GET':
+        return render_template('myaccount/myaccount_change_password.html', admin_flag = admin_flag)
     else:
-        return render_template('myaccount/myaccount_change_password_admin.html')
+        old_password = request.form.get('current_pwd')
+        new_password = request.form.get('new_pwd')
+        new_password_confirm = request.form.get('confirm_pwd')
+
+        sql_query = f"SELECT user_pwd FROM user WHERE u_id = '{user_id_}';"
+        cur.execute(sql_query)
+        user_pwd = cur.fetchall()
+        user_pwd = user_pwd[0][0]
+
+        old_password_flag = old_password == user_pwd
+        valid_password_flag = verify_password(new_password) and verify_password(new_password_confirm) and verify_confirmed_password(new_password, new_password_confirm)
+
+        if old_password_flag and valid_password_flag:
+
+            #Update user_pwd
+            sql_query = f"UPDATE user SET user_pwd = '{new_password}' WHERE u_id = '{user_id_}';"
+            cur.execute(sql_query)
+            conn.commit()
+
+            sql_query = f"SELECT user_full_name, user_email, u_id FROM user WHERE u_id = '{user_id_}';"
+            cur.execute(sql_query)
+            user_information = cur.fetchall()
+            user_information = user_information[0]
+
+            return render_template('myaccount/myaccount.html', user_information = user_information, admin_flag = admin_flag)
+        
+        else:
+
+            return render_template('myaccount/myaccount_change_password.html', admin_flag = admin_flag)
 
 @app.route('/myaccount/change_sec_questions', methods=['GET'])
 def change_sec_questions():
     global state
-    if state == "Student" or state == "Teacher":
+    global user_id_
+    if request.method == 'GET':
         return render_template('myaccount/myaccount_change_sec_questions.html')
     else:
         return render_template('myaccount/myaccount_change_sec_questions_admin.html')

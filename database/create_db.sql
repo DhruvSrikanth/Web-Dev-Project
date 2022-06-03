@@ -8,6 +8,7 @@ CREATE TABLE user (
     user_a1 VARCHAR(64),
     user_a2 VARCHAR(64),
     user_a3 VARCHAR(64),
+    active BOOLEAN DEFAULT FALSE,
 
     PRIMARY KEY (u_id)
 );
@@ -21,7 +22,7 @@ CREATE TABLE course (
     course_capacity INT,
     course_teacher INT,
 
-    FOREIGN KEY (course_teacher) REFERENCES user(u_id),
+    FOREIGN KEY (course_teacher) REFERENCES user(u_id) ON UPDATE CASCADE,
     PRIMARY KEY (course_id)
 );
 
@@ -55,7 +56,7 @@ CREATE TABLE user_course (
     u_id INT NOT NULL,
     course_id INT NOT NULL,
 
-    FOREIGN KEY (u_id) REFERENCES user(u_id),
+    FOREIGN KEY (u_id) REFERENCES user(u_id) ON UPDATE CASCADE,
     FOREIGN KEY (course_id) REFERENCES course(course_id),
     PRIMARY KEY(u_id, course_id)
 );
@@ -92,6 +93,6 @@ CREATE TABLE user_assignment (
     assignment_grade VARCHAR(64) DEFAULT "Not graded yet!",
 
     FOREIGN KEY (assignment_id) REFERENCES assignment(assignment_id),
-    FOREIGN KEY (u_id) REFERENCES user(u_id),
+    FOREIGN KEY (u_id) REFERENCES user(u_id) ON UPDATE CASCADE,
     PRIMARY KEY(u_id, assignment_id)
 );
