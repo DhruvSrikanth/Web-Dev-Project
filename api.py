@@ -318,11 +318,25 @@ def assignments(id_):
     global user_id_
     if state == "Student":
         if request.method == 'GET':
+    
+            new_assignments = []
+
             sql_query = f"SELECT assignment.assignment_id, assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date, assignment_submission_flag FROM assignment JOIN user_assignment ON user_assignment.assignment_id = assignment.assignment_id JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}' AND user_assignment.u_id = '{user_id_}';"
             cur.execute(sql_query)
             assignments = cur.fetchall()
 
-            return render_template('assignments/assignments_student.html', assignments = assignments, id_ = id_)
+            tz = timezone(config['timezone'])
+            time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+            time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
+
+            for assignment in assignments:
+                due_date = assignment[5]
+                due_date = datetime.strptime(due_date, '%Y-%m-%d %H:%M:%S')
+                if due_date > time_now:
+                    new_assignments.append(assignment)
+
+
+            return render_template('assignments/assignments_student.html', assignments = new_assignments, id_ = id_)
         
     elif state == "Teacher":
         if request.method == 'GET':
@@ -369,7 +383,7 @@ def assignments(id_):
             sql_query = f"SELECT * FROM assignment JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}';"
             cur.execute(sql_query)
             assignments = cur.fetchall()
-
+            
             return render_template('assignments/assignments_teacher.html', assignments = assignments, id_ = id_)
 
 
@@ -392,13 +406,25 @@ def assignment(id_, assign_id):
             cur.execute(sql_query)
             conn.commit()
 
+            new_assignments = []
+
             sql_query = f"SELECT assignment.assignment_id, assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date, assignment_submission_flag FROM assignment JOIN user_assignment ON user_assignment.assignment_id = assignment.assignment_id JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}' AND user_assignment.u_id = '{user_id_}';"
             cur.execute(sql_query)
             assignments = cur.fetchall()
 
-            return render_template('assignments/assignments_student.html', assignments = assignments, id_ = id_)
+            tz = timezone(config['timezone'])
+            time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+            time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
 
-@app.route('/course/grades', methods=['GET'])
+            for assignment in assignments:
+                due_date = assignment[5]
+                due_date = datetime.strptime(due_date, '%Y-%m-%d %H:%M:%S')
+                if due_date > time_now:
+                    new_assignments.append(assignment)
+
+            return render_template('assignments/assignments_student.html', assignments = new_assignments, id_ = id_)
+
+@app.route('/course/<id_>/grades', methods=['GET'])
 def grades():
     global state
     if state == "Student":
