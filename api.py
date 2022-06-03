@@ -670,14 +670,43 @@ def change_password():
 
             return render_template('myaccount/myaccount_change_password.html', admin_flag = admin_flag)
 
-@app.route('/myaccount/change_sec_questions', methods=['GET'])
+@app.route('/myaccount/change_sec_questions', methods=['GET', 'POST'])
 def change_sec_questions():
     global state
     global user_id_
+    
+    admin_flag = state == "Admin"
     if request.method == 'GET':
-        return render_template('myaccount/myaccount_change_sec_questions.html')
+        return render_template('myaccount/myaccount_change_sec_questions.html', admin_flag  = admin_flag)
     else:
-        return render_template('myaccount/myaccount_change_sec_questions_admin.html')
+        current_password = request.form.get('current_pwd')
+        a1 = request.form.get('security_question_1')
+        a2 = request.form.get('security_question_2')
+        a3 = request.form.get('security_question_3')
+
+        sql_query = f"SELECT user_pwd FROM user WHERE u_id = '{user_id_}';"
+        cur.execute(sql_query)
+        user_pwd = cur.fetchall()
+        user_pwd = user_pwd[0][0]
+
+        valid_password_flag = current_password == user_pwd
+
+        if valid_password_flag:
+            # Update user security questions
+            sql_query = f"UPDATE user SET user_a1 = '{a1}', user_a2 = '{a2}', user_a3 = '{a3}' WHERE u_id = '{user_id_}';"
+            cur.execute(sql_query)
+            conn.commit()
+
+            # Get user information
+            sql_query = f"SELECT user_full_name, user_email, u_id FROM user WHERE u_id = '{user_id_}';"
+            cur.execute(sql_query)
+            user_information = cur.fetchall()
+            user_information = user_information[0]
+
+            return render_template('myaccount/myaccount.html', user_information = user_information, admin_flag = admin_flag)
+        else:
+            return render_template('myaccount/myaccount_change_sec_questions.html', admin_flag  = admin_flag)
+
 
 @app.route('/settings', methods=['GET'])
 def settings():
