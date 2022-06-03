@@ -8,7 +8,7 @@ import re
 
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 # Database Connection
 conn = sqlite3.connect('./database/database.db', check_same_thread=False)
@@ -317,12 +317,14 @@ def assignments(id_):
     global state
     global user_id_
     if state == "Student":
-        if request.method == 'GET' or request.method == 'POST':
+        if request.method == 'GET':
             sql_query = f"SELECT assignment.assignment_id, assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date, assignment_submission_flag FROM assignment JOIN user_assignment ON user_assignment.assignment_id = assignment.assignment_id JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}' AND user_assignment.u_id = '{user_id_}';"
             cur.execute(sql_query)
             assignments = cur.fetchall()
 
             return render_template('assignments/assignments_student.html', assignments = assignments, id_ = id_)
+        
+
     elif state == "Teacher":
         return render_template('assignments/assignments_teacher.html')
 
@@ -339,6 +341,7 @@ def assignment(id_, assign_id):
         else:
             assignment_answer = request.form.get('answer')
             sql_query = f"UPDATE user_assignment SET assignment_submission = '{assignment_answer}', assignment_submission_flag = True WHERE assignment_id = '{assign_id}' AND u_id = '{user_id_}';"
+            print(sql_query)
             cur.execute(sql_query)
             conn.commit()
 

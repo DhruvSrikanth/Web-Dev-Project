@@ -7,7 +7,7 @@
         <meta name="description" content="Canvas Page Assignment">
         <meta name="keywords" content="canvas, html, assignment">
         <meta name="authors" content="Dhruv Srikanth, Redon Kurti, Vidur Subaiah">
-        <link rel="stylesheet" href="../../static/css/page_template.css">
+        <link rel="stylesheet" type = "text/css" href="{{url_for('static', filename= 'css/page_template.css')}}"> 
     </head>
     <body>
         <div class="grid-container">
@@ -33,7 +33,7 @@
                     {{assignment[0][1]}}
                 </h3>
                 <div class="form">
-                    <form action="/course/{{id_}}/assignments" method='POST'>
+                    <form action="/course/{{id_}}/assignment/{{assign_id}}" method='POST'>
                         <textarea id="answer" name="answer" placeholder="Enter anwser here..."></textarea>
                         <br/><br/>
                         <input type="submit" value="Submit"></input>
