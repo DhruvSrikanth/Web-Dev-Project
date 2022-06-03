@@ -708,11 +708,17 @@ def change_sec_questions():
             return render_template('myaccount/myaccount_change_sec_questions.html', admin_flag  = admin_flag)
 
 
-@app.route('/settings', methods=['GET'])
+@app.route('/settings', methods=['GET', 'POST'])
 def settings():
     global state
+    global user_id_
+
     if state == "Admin":
         return render_template('settings/settings.html')
+
+
+# Helper Functions
+
 
 
 if __name__ == '__main__':
