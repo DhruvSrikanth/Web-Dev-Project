@@ -322,17 +322,25 @@ def assignments(id_):
         cur.execute(sql_query)
         assignments = cur.fetchall()
 
-    
-
         return render_template('assignments/assignments_student.html', assignments = assignments, id_ = id_)
     elif state == "Teacher":
         return render_template('assignments/assignments_teacher.html')
 
-@app.route('/course/<id_>/assignment', methods=['GET'])
-def assignment():
+@app.route('/course/<id_>/assignment/<assign_id>', methods=['GET', 'POST'])
+def assignment(id_, assign_id):
     global state
+    global user_id_
     if state == "Student":
-        return render_template('assignments/assignment_student.html')
+        if request.method == 'GET':
+            sql_query = f"SELECT * FROM assignment WHERE assignment_id = '{assign_id}';"
+            cur.execute(sql_query)
+            assignment = cur.fetchall()
+            return render_template('assignments/assignment_student.html', assignment = assignment, id_ = id_)
+        else:
+            assignment_answer = request.form.get('answer')
+            sql_query = f"UPDATE user_assignment SET assignment_submission = '{assignment_answer}' WHERE ;"
+            cur.execute(sql_query)
+            assignment = cur.fetchall()
 
 @app.route('/course/grades', methods=['GET'])
 def grades():

@@ -50,12 +50,11 @@
                             <td>{{assignment[3]}}</td>
                             <td>{{assignment[4]}}</td>
 
-                            {% if {{assignment[5]}} == True: %}
+                            {% if assignment[5] == False %}
                                 <td><a href='/course/{{id_}}/assignment'><button type="button">Submit</button></a></td>
-                            {% else: %}
+                            {% else %}
                                 <td>Submitted</td>
-                            {% endif %}
-                    
+                            {% endif %}            
                         </tr>
                     {% endfor %}
 

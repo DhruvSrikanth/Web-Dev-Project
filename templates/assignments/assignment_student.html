@@ -30,11 +30,11 @@
                     <a href="/course/{{id_}}/grades">Grades</a>
                 </div>
                 <h3>
-                    Assignment X
+                    {{assignment[0][1]}}
                 </h3>
                 <div class="form">
-                    <form action="/course/assignments" method='GET'>
-                        <textarea id="textarea" name="textarea" placeholder="Enter anwser here..."></textarea>
+                    <form action="/course/{{id_}}/assignments" method='POST'>
+                        <textarea id="answer" name="answer" placeholder="Enter anwser here..."></textarea>
                         <br/><br/>
                         <input type="submit" value="Submit"></input>
                     </form>
