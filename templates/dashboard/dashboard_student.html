@@ -28,16 +28,30 @@
                 </div>
                 <div class="grid-element">
                     <h4>
-                        Assignments To Do:
+                        Assignments To Do (Within 3 Days):
                     </h4>
                     <ul>
+                        {% for assignment in assignments_to_do %}
+                            <li>
+                                <p>
+                                    {{assignment[2]}} - Due on {{assignment[5]}}
+                                </p>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
                 <div class="grid-element">
                     <h4>
-                        Upcoming Assignments:
+                        Upcoming Assignments (After 3 Days):
                     </h4>
                     <ul>
+                        {% for assignment in assignments_upcoming %}
+                            <li>
+                                <p>
+                                    {{assignment[2]}} - Due on {{assignment[5]}}
+                                </p>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
                 <div class="grid-element">
@@ -45,6 +59,13 @@
                         Past Assignments:
                     </h4>
                     <ul>
+                        {% for assignment in assignments_past %}
+                            <li>
+                                <p>
+                                    {{assignment[2]}} - Due on {{assignment[5]}}
+                                </p>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

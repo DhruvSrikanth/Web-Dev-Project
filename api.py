@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, flash
-from datetime import datetime
+from datetime import datetime, timedelta
 from pytz import timezone
 from config import config
 
@@ -47,7 +47,26 @@ def login():
                 state = result[0][4]
                 
                 if state == "Student":
-                    return render_template('dashboard/dashboard_student.html')
+                    # Get assignments for user
+                    sql_query = f"SELECT * FROM assignment JOIN user_assignment ON assignment.assignment_id = user_assignment.assignment_id WHERE u_id = '{user_id_}';"
+                    cur.execute(sql_query)
+                    user_assignments = cur.fetchall()
+
+                    tz = timezone(config['timezone'])
+                    time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+                    time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
+                    time_now_plus_3days = time_now + timedelta(days=3)
+
+                    # Assignments that are due in 3 days
+                    assignments_to_do = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') >= time_now and datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') <= time_now_plus_3days and not bool(x[8]), user_assignments))
+
+                    # Assignments that are after 3 days
+                    assignments_upcoming = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') > time_now_plus_3days and not bool(x[8]), user_assignments))
+
+                    # passed due assignments
+                    assignments_past = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') < time_now, user_assignments))
+
+                    return render_template('dashboard/dashboard_student.html', assignments_to_do=assignments_to_do, assignments_upcoming=assignments_upcoming, assignments_past=assignments_past)
                 elif state == "Teacher":
                     return render_template('dashboard/dashboard_teacher.html')
                 elif state == "Admin":
@@ -188,8 +207,29 @@ def new_pwd():
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     global state
+    global user_id_
     if state == "Student":
-        return render_template('dashboard/dashboard_student.html')
+        # Get assignments for user
+        sql_query = f"SELECT * FROM assignment JOIN user_assignment ON assignment.assignment_id = user_assignment.assignment_id WHERE u_id = '{user_id_}';"
+        cur.execute(sql_query)
+        user_assignments = cur.fetchall()
+
+        tz = timezone(config['timezone'])
+        time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+        time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
+        time_now_plus_3days = time_now + timedelta(days=3)
+
+        # Assignments that are due in 3 days
+        assignments_to_do = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') >= time_now and datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') <= time_now_plus_3days and not bool(x[8]), user_assignments))
+
+        # Assignments that are after 3 days
+        assignments_upcoming = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') > time_now_plus_3days and not bool(x[8]), user_assignments))
+
+        # passed due assignments
+        assignments_past = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') < time_now, user_assignments))
+
+        return render_template('dashboard/dashboard_student.html', assignments_to_do=assignments_to_do, assignments_upcoming=assignments_upcoming, assignments_past=assignments_past)
+        
     elif state == "Teacher":
         return render_template('dashboard/dashboard_teacher.html')
     elif state == "Admin":
@@ -385,8 +425,6 @@ def assignments(id_):
             assignments = cur.fetchall()
             
             return render_template('assignments/assignments_teacher.html', assignments = assignments, id_ = id_)
-
-
 
 
 @app.route('/course/<id_>/assignment/<assign_id>', methods=['GET', 'POST'])
