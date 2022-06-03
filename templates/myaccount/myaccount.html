@@ -18,6 +18,9 @@
                 <a href="/myaccount">My Account</a>
                 <a href="/dashboard">Dashboard</a>
                 <a href="/courses">Courses</a>
+                {% if admin_flag  %}
+                    <a href="/settings">Settings</a>
+                {% endif %}
                 <a href="/">Logout</a>
             </div>
             <div class="grid-element-main">
@@ -25,40 +28,14 @@
                     <h3> 
                         My Account
                     </h3>
-                </div>
 
-                <div class="grid-element">
-                    <h4>
-                        Personal Information:
-                    </h4>
-                </div>
-
-                <div class="grid-element">
-                    <h4>
-                        Name
-                    </h4>
                     <ul>
-
+                        <li>Name: {{user_information[0]}}</li>
+                        <li>Email: {{user_information[1]}}</li>
+                        <li>ID: {{user_information[2]}}</li>
                     </ul>
                 </div>
 
-                <div class="grid-element">
-                    <h4>
-                        E-mail
-                    </h4>
-                    <ul>
-
-                    </ul>
-                </div>
-
-                <div class="grid-element">
-                    <h4>
-                        Student ID
-                    </h4>
-                    <ul>
-                        
-                    </ul>
-                </div>
 
                 <div class="buttons">
                     <a href="/myaccount/edit_profile">

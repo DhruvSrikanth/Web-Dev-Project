@@ -566,18 +566,56 @@ def grades(id_):
 @app.route('/myaccount', methods=['GET'])
 def myaccount():
     global state
-    if state == "Student" or state == "Teacher":
-        return render_template('myaccount/myaccount.html')
-    else:
-        return render_template('myaccount/myaccount_admin.html')
+    global user_id_
 
-@app.route('/myaccount/edit_profile', methods=['GET'])
+    admin_flag = state == "Admin"
+
+    sql_query = f"SELECT user_full_name, user_email, u_id FROM user WHERE u_id = '{user_id_}';"
+    cur.execute(sql_query)
+    user_information = cur.fetchall()
+    user_information = user_information[0]
+
+    return render_template('myaccount/myaccount.html', user_information = user_information, admin_flag = admin_flag)
+    
+@app.route('/myaccount/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     global state
-    if state == "Student" or state == "Teacher":
-        return render_template('myaccount/myaccount_edit_profile.html')
+    global user_id_
+    admin_flag = state == "Admin"
+    
+    if request.method == 'GET':
+
+        return render_template('/myaccount/myaccount_edit_profile.html', admin_flag = admin_flag)
+
     else:
-        return render_template('myaccount/myaccount_edit_profile_admin.html')
+        user_name = request.form.get('full_name')
+        user_email = request.form.get('email')
+        user_id = int(request.form.get('id'))
+
+        sql_query = f"SELECT u_id FROM user;"
+        cur.execute(sql_query)
+        user_ids = cur.fetchall()
+        
+        user_ids = [int(x[0]) for x in user_ids]
+        unique_flag = user_id not in user_ids
+
+        valid_information_flag = verify_email(user_email) and verify_id(user_id) and unique_flag
+        
+        if valid_information_flag:
+            sql_query = f"UPDATE user SET user_full_name = '{user_name}', user_email = '{user_email}', u_id = '{user_id}' WHERE u_id = '{user_id_}';"
+            cur.execute(sql_query)
+            conn.commit()
+
+            user_id_ = user_id
+            sql_query = f"SELECT user_full_name, user_email, u_id FROM user WHERE u_id = '{user_id_}';"
+            cur.execute(sql_query)
+            user_information = cur.fetchall()
+            user_information = user_information[0]
+
+
+            return render_template('myaccount/myaccount.html', user_information = user_information, admin_flag = admin_flag)
+        else:
+            return render_template('myaccount/myaccount_edit_profile.html', admin_flag = admin_flag)
 
 @app.route('/myaccount/change_password', methods=['GET'])
 def change_password():
