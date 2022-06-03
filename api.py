@@ -324,9 +324,56 @@ def assignments(id_):
 
             return render_template('assignments/assignments_student.html', assignments = assignments, id_ = id_)
         
-
     elif state == "Teacher":
-        return render_template('assignments/assignments_teacher.html')
+        if request.method == 'GET':
+            sql_query = f"SELECT * FROM assignment JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}';"
+            cur.execute(sql_query)
+            assignments = cur.fetchall()
+            return render_template('assignments/assignments_teacher.html', assignments = assignments, id_ = id_)
+        else:
+            assignment_name = request.form.get('assign_name')
+            assignment_desc = request.form.get('desc')
+            assignment_total_points = request.form.get('points')
+            assignment_due_date = request.form.get('due_date')
+            assignment_due_date = " ".join((assignment_due_date + ":00").split("T"))
+
+            tz = timezone(config['timezone'])
+            assignment_post_date = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+
+            sql_query = "SELECT assignment_id FROM assignment;"
+            cur.execute(sql_query)
+            assignment_ids = cur.fetchall()
+            assignment_id = len(assignment_ids) + 1
+
+            # Update assignment table
+            sql_query = f"INSERT INTO assignment (assignment_id, assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date) VALUES ({assignment_id}, '{assignment_name}', '{assignment_desc}', {assignment_total_points}, '{assignment_post_date}', '{assignment_due_date}');"
+            cur.execute(sql_query)
+            conn.commit()
+
+            # Update course_assignment table
+            sql_query = f"INSERT INTO course_assignment (course_id, assignment_id) VALUES ({id_}, '{assignment_id}');"
+            cur.execute(sql_query)
+            conn.commit()
+
+            # Update user_assignment table
+            sql_query = f"SELECT u_id FROM user_course WHERE course_id = '{id_}';"
+            cur.execute(sql_query)
+            user_ids = cur.fetchall()
+            user_ids = [x[0] for x in user_ids]
+
+            for u_id in user_ids:
+                sql_query = f"INSERT INTO user_assignment (u_id, assignment_id) VALUES ('{u_id}', '{assignment_id}');"
+                cur.execute(sql_query)
+                conn.commit()
+
+            sql_query = f"SELECT * FROM assignment JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}';"
+            cur.execute(sql_query)
+            assignments = cur.fetchall()
+
+            return render_template('assignments/assignments_teacher.html', assignments = assignments, id_ = id_)
+
+
+
 
 @app.route('/course/<id_>/assignment/<assign_id>', methods=['GET', 'POST'])
 def assignment(id_, assign_id):

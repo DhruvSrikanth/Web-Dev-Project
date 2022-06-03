@@ -25,9 +25,9 @@
                     <h3>
                         Secondary Sidebar
                     </h3>
-                    <a href="/course/announcement">Announcements</a>
-                    <a href="/course/assignments">Assignments</a>
-                    <a href="/course/grades">Grades</a>
+                    <a href="/course/{{id_}}/announcement">Announcements</a>
+                    <a href="/course/{{id_}}/assignments">Assignments</a>
+                    <a href="/course/{{id_}}/grades">Grades</a>
                 </div>
                 <h3>
                     Current Assignments
@@ -59,17 +59,21 @@
                     Create New Assignment
                 </h3>
                 <div class="form">
-                    <form>
+                    <form action="/course/{{id_}}/assignments" method="POST">
                         <label for="assign_name">Assignment's Name:</label><br/>
                         <input type="text" id="assign_name" name="assign_name" required/><br/><br/>
 
                         <label for="points">Number of points:</label><br/>
                         <input type="text" id="points" name="points" required/><br/><br/>
                         
-                        <label for="textarea">Descripton:</label><br/>
-                        <textarea id="textarea" name="textarea" placeholder="Enter description..."></textarea>
+                        <label for="desc">Descripton:</label><br/>
+                        <textarea id="desc" name="desc" placeholder="Enter description..."></textarea>
                         <br/><br/>
+
+                        <label for="due_date">Due Date:</label><br/>
+                        <input type="datetime-local" id="due_date" name="due_date" placeholder="YYYY-mm-dd H:M:S (24hr format)"required/><br/><br/>
                         <input type="submit" value="Submit"></input>
+                        </br></br>
                     </form>
                 </div>
 
