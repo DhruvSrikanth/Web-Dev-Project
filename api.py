@@ -606,13 +606,26 @@ def edit_profile():
             cur.execute(sql_query)
             conn.commit()
 
+            if state == "Teacher":
+                sql_query = f"UPDATE course SET course_teacher = '{user_id}' WHERE course_teacher = '{user_id_}';"
+                cur.execute(sql_query)
+                conn.commit()
+            elif state == "Student":
+                sql_query = f"UPDATE user_course SET u_id = '{user_id}' WHERE u_id = '{user_id_}';"
+                cur.execute(sql_query)
+                conn.commit()
+
+                sql_query = f"UPDATE user_assignment SET u_id = '{user_id}' WHERE u_id = '{user_id_}';"
+                cur.execute(sql_query)
+                conn.commit()
+
             user_id_ = user_id
             sql_query = f"SELECT user_full_name, user_email, u_id FROM user WHERE u_id = '{user_id_}';"
             cur.execute(sql_query)
             user_information = cur.fetchall()
             user_information = user_information[0]
 
-
+            
             return render_template('myaccount/myaccount.html', user_information = user_information, admin_flag = admin_flag)
         else:
             return render_template('myaccount/myaccount_edit_profile.html', admin_flag = admin_flag)
