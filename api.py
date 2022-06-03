@@ -311,18 +311,18 @@ def announcements(id_):
             announcements = cur.fetchall()
             return render_template('announcements/announcements_teacher.html', announcements=announcements, id_ = id_)
 
-@app.route('/course/<id_>/assignments', methods=['GET'])
+@app.route('/course/<id_>/assignments', methods=['GET', 'POST'])
 def assignments(id_):
 
     global state
     global user_id_
     if state == "Student":
+        if request.method == 'GET' or request.method == 'POST':
+            sql_query = f"SELECT assignment.assignment_id, assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date, assignment_submission_flag FROM assignment JOIN user_assignment ON user_assignment.assignment_id = assignment.assignment_id JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}' AND user_assignment.u_id = '{user_id_}';"
+            cur.execute(sql_query)
+            assignments = cur.fetchall()
 
-        sql_query = f"SELECT assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date, assignment_submission_flag FROM assignment JOIN user_assignment ON user_assignment.assignment_id = assignment.assignment_id JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}' AND user_assignment.u_id = '{user_id_}';"
-        cur.execute(sql_query)
-        assignments = cur.fetchall()
-
-        return render_template('assignments/assignments_student.html', assignments = assignments, id_ = id_)
+            return render_template('assignments/assignments_student.html', assignments = assignments, id_ = id_)
     elif state == "Teacher":
         return render_template('assignments/assignments_teacher.html')
 
@@ -335,12 +335,18 @@ def assignment(id_, assign_id):
             sql_query = f"SELECT * FROM assignment WHERE assignment_id = '{assign_id}';"
             cur.execute(sql_query)
             assignment = cur.fetchall()
-            return render_template('assignments/assignment_student.html', assignment = assignment, id_ = id_)
+            return render_template('assignments/assignment_student.html', assignment = assignment, id_ = id_, assign_id = assign_id)
         else:
             assignment_answer = request.form.get('answer')
-            sql_query = f"UPDATE user_assignment SET assignment_submission = '{assignment_answer}' WHERE ;"
+            sql_query = f"UPDATE user_assignment SET assignment_submission = '{assignment_answer}', assignment_submission_flag = True WHERE assignment_id = '{assign_id}' AND u_id = '{user_id_}';"
             cur.execute(sql_query)
-            assignment = cur.fetchall()
+            conn.commit()
+
+            sql_query = f"SELECT assignment.assignment_id, assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date, assignment_submission_flag FROM assignment JOIN user_assignment ON user_assignment.assignment_id = assignment.assignment_id JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}' AND user_assignment.u_id = '{user_id_}';"
+            cur.execute(sql_query)
+            assignments = cur.fetchall()
+
+            return render_template('assignments/assignments_student.html', assignments = assignments, id_ = id_)
 
 @app.route('/course/grades', methods=['GET'])
 def grades():

@@ -44,14 +44,14 @@
                 
                     {% for assignment in assignments %}
                         <tr>
-                            <td>{{assignment[0]}}</td>
                             <td>{{assignment[1]}}</td>
                             <td>{{assignment[2]}}</td>
                             <td>{{assignment[3]}}</td>
                             <td>{{assignment[4]}}</td>
+                            <td>{{assignment[5]}}</td>
 
-                            {% if assignment[5] == False %}
-                                <td><a href='/course/{{id_}}/assignment'><button type="button">Submit</button></a></td>
+                            {% if assignment[6] == False %}
+                                <td><a href='/course/{{id_}}/assignment/{{assignment[0]}}'><button type="button">Submit</button></a></td>
                             {% else %}
                                 <td>Submitted</td>
                             {% endif %}            

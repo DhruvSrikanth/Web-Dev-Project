@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS course;
 CREATE TABLE course (
     course_id INT NOT NULL,
     course_name VARCHAR(64),
-    course_desc VARCHAR(64),
+    course_desc VARCHAR(1024),
     course_capacity INT,
     course_teacher INT,
 
@@ -30,7 +30,7 @@ DROP TABLE IF EXISTS announcement;
 CREATE TABLE announcement (
     announcement_id INT NOT NULL,
     announcement_title VARCHAR(64),
-    announcement_desc VARCHAR(64),
+    announcement_desc VARCHAR(1024),
     announcement_date_time TEXT,
 
     PRIMARY KEY (announcement_id)
@@ -41,7 +41,7 @@ DROP TABLE IF EXISTS assignment;
 CREATE TABLE assignment (
     assignment_id INT NOT NULL,
     assignment_title VARCHAR(64),
-    assignment_desc VARCHAR(64),
+    assignment_desc VARCHAR(1024),
     assignment_total_points INT,
     assignment_post_date TEXT,
     assignment_due_date TEXT,
@@ -88,7 +88,7 @@ CREATE TABLE user_assignment (
     u_id INT NOT NULL,
     assignment_id INT NOT NULL,
     assignment_submission_flag BOOLEAN DEFAULT FALSE,
-    assignment_submission VARCHAR(1024),
+    assignment_submission VARCHAR(1024) DEFAULT "Assignment not submitted!",
 
     FOREIGN KEY (assignment_id) REFERENCES assignment(assignment_id),
     FOREIGN KEY (u_id) REFERENCES user(u_id),
