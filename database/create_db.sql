@@ -87,6 +87,7 @@ DROP TABLE IF EXISTS user_assignment;
 CREATE TABLE user_assignment (
     u_id INT NOT NULL,
     assignment_id INT NOT NULL,
+    assignment_submission_flag BOOLEAN DEFAULT FALSE,
 
     FOREIGN KEY (assignment_id) REFERENCES assignment(assignment_id),
     FOREIGN KEY (u_id) REFERENCES user(u_id),

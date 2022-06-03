@@ -25,23 +25,45 @@
                     <h3>
                         Secondary Sidebar
                     </h3>
-                    <a href="/course/announcement">Announcements</a>
-                    <a href="/course/assignments">Assignments</a>
-                    <a href="/course/grades">Grades</a>
+                    <a href="/course/{{id_}}/announcement">Announcements</a>
+                    <a href="/course/{{id_}}/assignments">Assignments</a>
+                    <a href="/course/{{id_}}/grades">Grades</a>
                 </div>
                 <h3>
-                    Assignments
+                    Current Assignments
                 </h3>
                 <table>
                     <tr>
                         <th> Title</th>
-                        <th> Content </th>
+                        <th> Description</th>
+                        <th> Total Points</th>
+                        <th> Post Posted</th>
+                        <th> Due Date</th>
+                        <th> Submission</th>
                     </tr>
-                    <tr>
-                        <td>Assignment 1</td>
-                        <td> Do something!</td>
-                        <td><a href="/course/assignment">Add Submission</a></td>
-                    </tr>
+                
+                    {% for assignment in assignments %}
+                        <tr>
+                            <td>{{assignment[0]}}</td>
+                            <td>{{assignment[1]}}</td>
+                            <td>{{assignment[2]}}</td>
+                            <td>{{assignment[3]}}</td>
+                            <td>{{assignment[4]}}</td>
+
+                            {% if {{assignment[5]}} == True: %}
+                                <td><a href='/course/{{id_}}/assignment'><button type="button">Submit</button></a></td>
+                            {% else: %}
+                                <td>Submitted</td>
+                            {% endif %}
+                    
+                        </tr>
+                    {% endfor %}
+
+                    
+
+
+                        
+                    
                 </table>
 
             </div>

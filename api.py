@@ -278,7 +278,7 @@ def announcements(id_):
         cur.execute(sql_query)
         announcements = cur.fetchall()
 
-        return render_template('announcements/announcements_student.html', announcements=announcements)
+        return render_template('announcements/announcements_student.html', announcements=announcements, id_ = id_)
     elif state == "Teacher":
         if request.method == 'GET':
             sql_query = f"SELECT * FROM announcement JOIN course_announcement ON announcement.announcement_id = course_announcement.announcement_id WHERE course_announcement.course_id = '{id_}';"
@@ -311,15 +311,24 @@ def announcements(id_):
             announcements = cur.fetchall()
             return render_template('announcements/announcements_teacher.html', announcements=announcements, id_ = id_)
 
-@app.route('/course/assignments', methods=['GET'])
-def assignments():
+@app.route('/course/<id_>/assignments', methods=['GET'])
+def assignments(id_):
+
     global state
+    global user_id_
     if state == "Student":
-        return render_template('assignments/assignments_student.html')
+
+        sql_query = f"SELECT assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date, assignment_submission_flag FROM assignment JOIN user_assignment ON user_assignment.assignment_id = assignment.assignment_id JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id WHERE course_assignment.course_id = '{id_}' AND user_assignment.u_id = '{user_id_}';"
+        cur.execute(sql_query)
+        assignments = cur.fetchall()
+
+    
+
+        return render_template('assignments/assignments_student.html', assignments = assignments, id_ = id_)
     elif state == "Teacher":
         return render_template('assignments/assignments_teacher.html')
 
-@app.route('/course/assignment', methods=['GET'])
+@app.route('/course/<id_>/assignment', methods=['GET'])
 def assignment():
     global state
     if state == "Student":

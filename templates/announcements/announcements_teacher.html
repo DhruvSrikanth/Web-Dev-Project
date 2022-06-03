@@ -25,9 +25,9 @@
                     <h3>
                         Secondary Sidebar
                     </h3>
-                    <a href="/course/announcement">Announcements</a>
-                    <a href="/course/assignments">Assignments</a>
-                    <a href="/course/grades">Grades</a>
+                    <a href="/course/{{id_}}/announcement">Announcements</a>
+                    <a href="/course/{{id_}}/assignments">Assignments</a>
+                    <a href="/course/{{id_}}/grades">Grades</a>
                 </div>
                 <h3>
                     Current Announcements
@@ -40,9 +40,9 @@
                     </tr>
                     {% for announcement in announcements %}
                         <tr>
-                            <td>{{announcement[0]}}</td>
                             <td>{{announcement[1]}}</td>
                             <td>{{announcement[2]}}</td>
+                            <td>{{announcement[3]}}</td>
                         </tr>
                     {% endfor %}
 
