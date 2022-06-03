@@ -35,12 +35,19 @@
                 <table>
                     <tr>
                         <th> Title</th>
-                        <th> Content</th>
+                        <th> Description</th>
+                        <th> Date Posted</th>
                     </tr>
-                    <tr>
-                        <td>Announcement 1</td>
-                        <td>Hello</td>
-                    </tr>
+                
+                    {% for announcement in announcements %}
+                        <tr>
+                            <td>{{announcement[0]}}</td>
+                            <td>{{announcement[1]}}</td>
+                            <td>{{announcement[2]}}</td>
+                        </tr>
+                    {% endfor %}
+                        
+                    
                 </table>
 
             </div>

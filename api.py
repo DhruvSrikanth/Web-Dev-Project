@@ -1,10 +1,12 @@
 from flask import Flask, request, render_template, flash
-import json
+from datetime import datetime
+from pytz import timezone
+from config import config
+
 import sqlite3
-import sys
 import re
 
-from config import config
+
 
 app = Flask(__name__)
 
@@ -266,13 +268,48 @@ def course(id):
         sql_query = f"SELECT * FROM course WHERE course_id = '{id}';"
         return render_template('courses/course_teacher.html', course=course)
 
-@app.route('/course/<id>/announcement', methods=['GET'])
-def announcements(id):
+@app.route('/course/<id_>/announcement', methods=['GET', 'POST'])
+def announcements(id_):
     global state
+    global user_id_
     if state == "Student":
-        return render_template('announcements/announcements_student.html')
+
+        sql_query = f"SELECT * FROM announcement JOIN course_announcement ON announcement.announcement_id = course_announcement.announcement_id WHERE course_announcement.course_id = '{id_}';"
+        cur.execute(sql_query)
+        announcements = cur.fetchall()
+
+        return render_template('announcements/announcements_student.html', announcements=announcements)
     elif state == "Teacher":
-        return render_template('announcements/announcements_teacher.html')
+        if request.method == 'GET':
+            sql_query = f"SELECT * FROM announcement JOIN course_announcement ON announcement.announcement_id = course_announcement.announcement_id WHERE course_announcement.course_id = '{id_}';"
+            cur.execute(sql_query)
+            announcements = cur.fetchall()
+
+            return render_template('announcements/announcements_teacher.html', announcements=announcements, id_ = id_)
+        else:
+            announcement_title = request.form.get('title')
+            announcement_desc = request.form.get('desc')
+
+            tz = timezone(config['timezone'])
+            current_time = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+
+            sql_query = "SELECT announcement_id FROM announcement;"
+            cur.execute(sql_query)
+            announcement_ids = cur.fetchall()
+            announcement_id = len(announcement_ids) + 1
+            
+            sql_query = f"INSERT INTO announcement (announcement_id, announcement_title, announcement_desc, announcement_date_time) VALUES ('{announcement_id}', '{announcement_title}', '{announcement_desc}', '{current_time}');"
+            cur.execute(sql_query)
+            conn.commit()
+
+            sql_query = f"INSERT INTO  course_announcement (course_id, announcement_id) VALUES ('{id_}','{announcement_id}');"
+            cur.execute(sql_query)
+            conn.commit()
+
+            sql_query = f"SELECT * FROM announcement JOIN course_announcement ON announcement.announcement_id = course_announcement.announcement_id WHERE course_announcement.course_id = '{id_}';"
+            cur.execute(sql_query)
+            announcements = cur.fetchall()
+            return render_template('announcements/announcements_teacher.html', announcements=announcements, id_ = id_)
 
 @app.route('/course/assignments', methods=['GET'])
 def assignments():

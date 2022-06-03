@@ -30,25 +30,33 @@
                     <a href="/course/grades">Grades</a>
                 </div>
                 <h3>
-                    Announcements
+                    Current Announcements
                 </h3>
                 <table>
                     <tr>
                         <th> Title</th>
-                        <th> Content</th>
+                        <th> Description</th>
+                        <th> Date Posted</th>
                     </tr>
-                    <tr>
-                        <td>Announcement 1</td>
-                        <td>Hello</td>
-                    </tr>
+                    {% for announcement in announcements %}
+                        <tr>
+                            <td>{{announcement[0]}}</td>
+                            <td>{{announcement[1]}}</td>
+                            <td>{{announcement[2]}}</td>
+                        </tr>
+                    {% endfor %}
+
                 </table>
                 <br/><br/>
                 <h3>
-                    New Announcement
+                    Create Announcement
                 </h3>
                 <div class="form">
-                    <form>
-                        <textarea id="textarea" name="textarea" placeholder="Enter new announcement..."></textarea>
+                    <form action="/course/{{id_}}/announcement" method="POST">
+                        <label class="title">Title:</label><br/>
+                        <input type="text" id="title" name="title" required/><br/><br/>
+                        <label class="desc">Description:</label><br/>
+                        <textarea id="desc" name="desc" placeholder="Enter description..."></textarea>
                         <br/><br/>
                         <input type="submit" value="Submit"></input>
                     </form>
