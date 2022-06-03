@@ -68,7 +68,37 @@ def login():
 
                     return render_template('dashboard/dashboard_student.html', assignments_to_do=assignments_to_do, assignments_upcoming=assignments_upcoming, assignments_past=assignments_past)
                 elif state == "Teacher":
-                    return render_template('dashboard/dashboard_teacher.html')
+                    # Get assigntments that need grading (past)
+                    sql_query = f"SELECT course_name, assignment_title, user_full_name, assignment_due_date FROM assignment JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id JOIN user_assignment ON user_assignment.assignment_id = course_assignment.assignment_id JOIN course ON course.course_id = course_assignment.course_id JOIN user ON user.u_id = user_assignment.u_id WHERE course_teacher = '{user_id_}' AND assignment_grade = 'Not graded yet!';"
+                    cur.execute(sql_query)
+                    assignments_to_grade = cur.fetchall()
+
+                    tz = timezone(config['timezone'])
+                    time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+                    time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
+
+                    
+
+                    # passed due assignments
+                    assignments_to_grade = list(filter(lambda x: datetime.strptime(x[3], '%Y-%m-%d %H:%M:%S') < time_now, assignments_to_grade))
+                    course_names = sorted(list(set([x[0] for x in assignments_to_grade])))
+
+                    assignments_to_grade_new = {}
+                    assignments_to_grade_new = {x:[] for x in course_names}
+                    for x in assignments_to_grade:
+                        assignments_to_grade_new[x[0]].append(x[1:])
+
+                    for x in assignments_to_grade_new:
+                        assignments_to_grade_new[x] = sorted(assignments_to_grade_new[x], key=lambda x: x[0])
+                    
+                    assignments_to_grade_final = []
+                    for x in assignments_to_grade_new:
+                        for y in assignments_to_grade_new[x]:
+                            element = [x]
+                            element.extend(list(y))
+                            assignments_to_grade_final.append(element)
+
+                    return render_template('dashboard/dashboard_teacher.html', assignments_to_grade=assignments_to_grade_final, course_names=course_names)
                 elif state == "Admin":
                     return render_template('dashboard/dashboard_admin.html')
             else:
@@ -231,7 +261,35 @@ def dashboard():
         return render_template('dashboard/dashboard_student.html', assignments_to_do=assignments_to_do, assignments_upcoming=assignments_upcoming, assignments_past=assignments_past)
 
     elif state == "Teacher":
-        return render_template('dashboard/dashboard_teacher.html')
+        # Get assigntments that need grading (past)
+        sql_query = f"SELECT course_name, assignment_title, user_full_name, assignment_due_date FROM assignment JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id JOIN user_assignment ON user_assignment.assignment_id = course_assignment.assignment_id JOIN course ON course.course_id = course_assignment.course_id JOIN user ON user.u_id = user_assignment.u_id WHERE course_teacher = '{user_id_}' AND assignment_grade = 'Not graded yet!';"
+        cur.execute(sql_query)
+        assignments_to_grade = cur.fetchall()
+
+        tz = timezone(config['timezone'])
+        time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+        time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
+
+        # passed due assignments
+        assignments_to_grade = list(filter(lambda x: datetime.strptime(x[3], '%Y-%m-%d %H:%M:%S') < time_now, assignments_to_grade))
+        course_names = sorted(list(set([x[0] for x in assignments_to_grade])))
+
+        assignments_to_grade_new = {}
+        assignments_to_grade_new = {x:[] for x in course_names}
+        for x in assignments_to_grade:
+            assignments_to_grade_new[x[0]].append(x[1:])
+
+        for x in assignments_to_grade_new:
+            assignments_to_grade_new[x] = sorted(assignments_to_grade_new[x], key=lambda x: x[0])
+        
+        assignments_to_grade_final = []
+        for x in assignments_to_grade_new:
+            for y in assignments_to_grade_new[x]:
+                element = [x]
+                element.extend(list(y))
+                assignments_to_grade_final.append(element)
+
+        return render_template('dashboard/dashboard_teacher.html', assignments_to_grade=assignments_to_grade_final, course_names=course_names)
     elif state == "Admin":
         return render_template('dashboard/dashboard_admin.html')
 

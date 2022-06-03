@@ -30,8 +30,20 @@
                     <h4>
                         Past Assignments To Be Graded:
                     </h4>
-                    <ul>
-                    </ul>
+                    {% for course_name in course_names %}
+                        <h4>
+                            Course - {{course_name}}
+                        </h4>
+                        <ul>
+                            {% for assignment in assignments_to_grade %}
+                                {% if assignment[0] == course_name %}
+                                    <li>
+                                        Assignment titled {{assignment[1]}}, by {{assignment[2]}}, has not yet been graded by you.
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {%endfor%}
                 </div>
             </div>
             <div class="grid-element-footer"></div>
