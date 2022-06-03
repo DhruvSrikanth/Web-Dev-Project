@@ -25,24 +25,28 @@
                     <h3>
                         Secondary Sidebar
                     </h3>
-                    <a href="/course/announcement">Announcements</a>
-                    <a href="/course/assignments">Assignments</a>
-                    <a href="/course/grades">Grades</a>
+                    <a href="/course/{{id_}}/announcement">Announcements</a>
+                    <a href="/course/{{id_}}/assignments">Assignments</a>
+                    <a href="/course/{{id_}}/grades">Grades</a>
                 </div>
                 <h3>
                     Grades
                 </h3>
                 <table>
                     <tr>
-                        <th> Assignment</th>
-                        <th> Grade</th>
+                        <th> Title</th>
+                        <th> Grade Received</th>
+                        <th> Total</th>
                     </tr>
-                    <tr>
-                        <td>Announcement 1</td>
-                        <td>30/30</td>
-                    </tr>
+                
+                    {% for assignment in assignments %}
+                        <tr>
+                            <td>{{assignment[0]}}</td>
+                            <td>{{assignment[1]}}</td>
+                            <td>{{assignment[2]}}</td>        
+                        </tr>
+                    {% endfor %} 
                 </table>
-
             </div>
             <div class="grid-element-extra">
                

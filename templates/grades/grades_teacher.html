@@ -25,26 +25,45 @@
                     <h3>
                         Secondary Sidebar
                     </h3>
-                    <a href="/course/announcement">Announcements</a>
-                    <a href="/course/assignments">Assignments</a>
-                    <a href="/course/grades">Grades</a>
+                    <a href="/course/{{id_}}/announcement">Announcements</a>
+                    <a href="/course/{{id_}}/assignments">Assignments</a>
+                    <a href="/course/{{id_}}/grades">Grades</a>
                 </div>
                 <h3>
                     Grades
                 </h3>
-                <table>
-                    <tr>
-                        <th> Assignment</th>
-                        <th> Grade</th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <td>Announcement 1</td>
-                        <td>30/30</td>
-                        <td> <a href="/course/grade">Edit</a></td>
-                    </tr>
-                </table>
-
+                {% for assignment_name in assignment_names %}
+                    <h4>
+                        Assignment - {{assignment_name}}
+                    </h4>
+                    <table>
+                        <tr>
+                            <th> Student</th>
+                            <th> Submission</th>
+                            <th> Grade Received</th>
+                            <th> Total</th>
+                            <th> Edit Grade</th>
+                        </tr>
+                        {% for assignment in assignments %}
+                            {% if assignment[0] == assignment_name %}
+                                <tr>
+                                    <td>{{assignment[1]}}</td>
+                                    <td>{{assignment[2]}}</td>
+                                    <td>{{assignment[3]}}</td> 
+                                    <td>{{assignment[4]}}</td>
+                                    <td>
+                                        <form action="/course/{{id_}}/grades" method="POST">
+                                            <input type="text" id="edit_grade" name="edit_grade"/>
+                                            <input type="hidden" id="assignment_id" name = "assignment_id" value="{{assignment[5]}}"/>
+                                            <input type="hidden" id="user_id" name = "user_id" value="{{assignment[6]}}"/>
+                                            <input type="submit" id="edit_grade_button" value="Submit Grade"></input>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %} 
+                    </table>
+                {%endfor%}
             </div>
             <div class="grid-element-extra">
                 

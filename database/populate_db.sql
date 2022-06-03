@@ -23,6 +23,7 @@ INSERT INTO assignment (assignment_id, assignment_title, assignment_desc, assign
 INSERT INTO assignment (assignment_id, assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date) VALUES (5, 'HW2', 'Backpropogation', 30, "2022-06-01 00:00:00", "2022-06-10 00:00:00");
 INSERT INTO assignment (assignment_id, assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date) VALUES (6, 'HW3', 'PAC Learning', 30, "2022-05-01 00:00:00", "2022-05-30 00:00:00");
 
+INSERT INTO assignment (assignment_id, assignment_title, assignment_desc, assignment_total_points, assignment_post_date, assignment_due_date) VALUES (7, 'HW1', 'MPI + OpenMP', 50, "2022-06-01 00:00:00", "2022-06-5 00:00:00");
 
 
 INSERT INTO user_course (u_id, course_id) VALUES (2, 1);
@@ -53,6 +54,8 @@ INSERT INTO course_assignment (course_id, assignment_id) VALUES (2, 4);
 INSERT INTO course_assignment (course_id, assignment_id) VALUES (2, 5);
 INSERT INTO course_assignment (course_id, assignment_id) VALUES (2, 6);
 
+INSERT INTO course_assignment (course_id, assignment_id) VALUES (3, 7);
+
 
 
 
@@ -62,7 +65,9 @@ INSERT INTO user_assignment (u_id, assignment_id) VALUES (2, 3);
 INSERT INTO user_assignment (u_id, assignment_id) VALUES (2, 4);
 INSERT INTO user_assignment (u_id, assignment_id) VALUES (2, 5);
 INSERT INTO user_assignment (u_id, assignment_id) VALUES (2, 6);
+INSERT INTO user_assignment (u_id, assignment_id) VALUES (2, 7);
 
 INSERT INTO user_assignment (u_id, assignment_id) VALUES (4, 1);
 INSERT INTO user_assignment (u_id, assignment_id) VALUES (4, 2);
 INSERT INTO user_assignment (u_id, assignment_id) VALUES (4, 3);
+INSERT INTO user_assignment (u_id, assignment_id) VALUES (4, 7);

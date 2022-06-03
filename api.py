@@ -229,7 +229,7 @@ def dashboard():
         assignments_past = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') < time_now, user_assignments))
 
         return render_template('dashboard/dashboard_student.html', assignments_to_do=assignments_to_do, assignments_upcoming=assignments_upcoming, assignments_past=assignments_past)
-        
+
     elif state == "Teacher":
         return render_template('dashboard/dashboard_teacher.html')
     elif state == "Admin":
@@ -462,19 +462,48 @@ def assignment(id_, assign_id):
 
             return render_template('assignments/assignments_student.html', assignments = new_assignments, id_ = id_)
 
-@app.route('/course/<id_>/grades', methods=['GET'])
-def grades():
+@app.route('/course/<id_>/grades', methods=['GET', 'POST'])
+def grades(id_):
     global state
+    global user_id_
     if state == "Student":
-        return render_template('grades/grades_students.html')
-    elif state == "Teacher":
-        return render_template('grades/grades_teacher.html')
+        if request.method == 'GET':
+            sql_query = f"SELECT assignment_title, assignment_grade, assignment_total_points FROM user_assignment JOIN course_assignment ON course_assignment.assignment_id = user_assignment.assignment_id JOIN assignment ON assignment.assignment_id = course_assignment.assignment_id WHERE course_assignment.course_id = '{id_}' AND user_assignment.u_id = '{user_id_}';"
+            cur.execute(sql_query)
+            assignments = cur.fetchall()
 
-@app.route('/course/grade', methods=['GET'])
-def grade():
-    global state
-    if state == "Teacher":
-        return render_template('grades/grade_teacher.html')
+            return render_template('grades/grades_students.html', assignments = assignments, id_ = id_)
+    elif state == "Teacher":
+        if request.method == 'GET':
+            sql_query = f"SELECT assignment_title, user_full_name, assignment_submission, assignment_grade, assignment_total_points, assignment.assignment_id, user.u_id FROM user_assignment JOIN course_assignment ON course_assignment.assignment_id = user_assignment.assignment_id JOIN assignment ON assignment.assignment_id = course_assignment.assignment_id JOIN user ON user_assignment.u_id = user.u_id WHERE course_assignment.course_id = '{id_}';"
+            cur.execute(sql_query)
+            assignments = cur.fetchall()
+
+            assignments = sorted(assignments, key=lambda x: x[0])
+            assignment_names = sorted(list(set([x[0] for x in assignments])))
+
+            return render_template('grades/grades_teacher.html', id_ = id_, assignments = assignments, assignment_names = assignment_names)
+        else:
+            # Get information to update grade
+            assignment_grade = int(request.form.get('edit_grade'))
+            assignment_id = int(request.form.get('assignment_id'))
+            user_id = int(request.form.get('user_id'))
+
+            # Update user_assignment table
+            sql_query = f"UPDATE user_assignment SET assignment_grade = '{assignment_grade}' WHERE assignment_id = '{assignment_id}' AND u_id = '{user_id}';"
+            cur.execute(sql_query)
+            conn.commit()
+
+
+            # Get the same as before for reloading page
+            sql_query = f"SELECT assignment_title, user_full_name, assignment_submission, assignment_grade, assignment_total_points, assignment.assignment_id, user.u_id FROM user_assignment JOIN course_assignment ON course_assignment.assignment_id = user_assignment.assignment_id JOIN assignment ON assignment.assignment_id = course_assignment.assignment_id JOIN user ON user_assignment.u_id = user.u_id WHERE course_assignment.course_id = '{id_}';"
+            cur.execute(sql_query)
+            assignments = cur.fetchall()
+
+            assignments = sorted(assignments, key=lambda x: x[0])
+            assignment_names = sorted(list(set([x[0] for x in assignments])))
+
+            return render_template('grades/grades_teacher.html', id_ = id_, assignments = assignments, assignment_names = assignment_names)
 
 @app.route('/myaccount', methods=['GET'])
 def myaccount():
