@@ -1,5 +1,13 @@
 # Web Development Canvas Final Project
 
+In this repository, you will find the source code, database and instructions on how to run the created application. We have created a web-based application of the **Canvas** website.
+
+## Technology Used:
+- SQL
+- Javascript
+- HTML
+- CSS
+- Python
 ## Database Details:
 
 We used `SQLite`, version 3 for this project. The schema for the database can be found in the `./database/create_db.sql` file.
