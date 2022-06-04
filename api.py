@@ -100,7 +100,22 @@ def login():
 
                     return render_template('dashboard/dashboard_teacher.html', assignments_to_grade=assignments_to_grade_final, course_names=course_names)
                 elif state == "Admin":
-                    return render_template('dashboard/dashboard_admin.html')
+                    sql_query = f"SELECT * FROM user WHERE user_type = 'Student' AND active = 'True';"
+                    cur.execute(sql_query)
+                    students = cur.fetchall()
+                    num_active_students = len(students)
+
+                    sql_query = f"SELECT * FROM course;"
+                    cur.execute(sql_query)
+                    courses = cur.fetchall()
+                    num_courses = len(courses)
+
+                    sql_query = f"SELECT * FROM user WHERE user_type = 'Teacher' AND active = 'True';"
+                    cur.execute(sql_query)
+                    teachers = cur.fetchall()
+                    num_active_teachers = len(teachers)
+
+                    return render_template('dashboard/dashboard_admin.html', num_active_students=num_active_students, num_active_teachers=num_active_teachers, num_courses=num_courses)
             else:
                 return render_template('login/login.html')            
         except Exception as e:
@@ -148,32 +163,6 @@ def signup():
         except Exception as e:
             print(e)
             return render_template('login/signup.html')
-
-# Signup Helper Functions
-def verify_email(email):
-    pattern = re.compile("[a-z0-9]+@[a-z]+\.edu")
-    return bool(pattern.match(email))
-
-def verify_id(id_):
-    return type(id_) == int
-
-def verify_password(pwd):
-    pattern = re.compile("^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$")
-    return bool(pattern.match(pwd)) 
-
-def verify_confirmed_password(pwd, pwd_confirm):
-    return pwd == pwd_confirm
-
-def verify_unqiue_entries(email, id_):
-    sql_query = f"SELECT * FROM user WHERE user_email = '{email}';"
-    cur.execute(sql_query)
-    r1 = cur.fetchall()
-
-    sql_query = f"SELECT * FROM user WHERE u_id = '{id_}';"
-    cur.execute(sql_query)
-    r2 = cur.fetchall()
-
-    return len(r1) == 0 and len(r2) == 0
 
 # Forgot Password API
 @app.route('/forgot', methods=['GET', 'POST'])
@@ -291,7 +280,22 @@ def dashboard():
 
         return render_template('dashboard/dashboard_teacher.html', assignments_to_grade=assignments_to_grade_final, course_names=course_names)
     elif state == "Admin":
-        return render_template('dashboard/dashboard_admin.html')
+        sql_query = f"SELECT * FROM user WHERE user_type = 'Student' AND active = 'True';"
+        cur.execute(sql_query)
+        students = cur.fetchall()
+        num_active_students = len(students)
+
+        sql_query = f"SELECT * FROM course;"
+        cur.execute(sql_query)
+        courses = cur.fetchall()
+        num_courses = len(courses)
+
+        sql_query = f"SELECT * FROM user WHERE user_type = 'Teacher' AND active = 'True';"
+        cur.execute(sql_query)
+        teachers = cur.fetchall()
+        num_active_teachers = len(teachers)
+
+        return render_template('dashboard/dashboard_admin.html', num_active_students=num_active_students, num_active_teachers=num_active_teachers, num_courses=num_courses)
 
 @app.route('/courses', methods=['GET', 'POST'])
 def courses():
@@ -483,7 +487,6 @@ def assignments(id_):
             assignments = cur.fetchall()
             
             return render_template('assignments/assignments_teacher.html', assignments = assignments, id_ = id_)
-
 
 @app.route('/course/<id_>/assignment/<assign_id>', methods=['GET', 'POST'])
 def assignment(id_, assign_id):
@@ -776,8 +779,31 @@ def settings():
 
             return render_template('settings/settings.html', user_information = user_information, courses = courses)
 
-
 # Helper Functions
+def verify_email(email):
+    pattern = re.compile("[a-z0-9]+@[a-z]+\.edu")
+    return bool(pattern.match(email))
+
+def verify_id(id_):
+    return type(id_) == int
+
+def verify_password(pwd):
+    pattern = re.compile("^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$")
+    return bool(pattern.match(pwd)) 
+
+def verify_confirmed_password(pwd, pwd_confirm):
+    return pwd == pwd_confirm
+
+def verify_unqiue_entries(email, id_):
+    sql_query = f"SELECT * FROM user WHERE user_email = '{email}';"
+    cur.execute(sql_query)
+    r1 = cur.fetchall()
+
+    sql_query = f"SELECT * FROM user WHERE u_id = '{id_}';"
+    cur.execute(sql_query)
+    r2 = cur.fetchall()
+
+    return len(r1) == 0 and len(r2) == 0
 
 
 
