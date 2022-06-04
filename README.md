@@ -1,9 +1,15 @@
 # Web Development Canvas Final Project
 
+## Database Details:
+
+We used `SQLite`, version 3 for this project. The schema for the database can be found in the `./database/create_db.sql` file.
+## Backend Server API:
+
+The backend was implemented using `Flask` API. This API utilizes the `REST` API and transmits `JSON` objects at the backend.
 ## Requirements:
 
-- `sqlite3`
-- `python3`
+- `sqlite3` (for the `database`)
+- `python3` (for the `server API`)
 
 Once the above requirements are met, install the required `python` dependencies - 
 
@@ -38,8 +44,34 @@ sqlite3 database.db
 .exit
 cd ..
 ```
+
+## Account Setup (Initial):
+
+After populating the database, you will need to login as an **admin** to activate other users (**student**, **teacher**). As an admin, you will be able to check the default inactive users provided in the **settings** page.
+
+Admin Account - 
+```
+Username (Email ID) : admin1@uchicago.edu
+Password : @password1
+```
+
 ## Run instructions (For running the server API):
 
 ```
 python3 api.py
 ```
+
+## Accessing Website:
+
+The website can be found at the following address:
+```
+http://localhost:8080/
+```
+
+The same can be found [here](http://localhost:8080/).
+
+## Video Demonstration:
+
+The video demonstration (walkthrough) on how to use the website, can be found [here](video_link). 
+
+
