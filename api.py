@@ -749,7 +749,7 @@ def settings():
                 sql_query = f"SELECT active FROM user WHERE u_id = '{user_id}';"
                 cur.execute(sql_query)
                 active = cur.fetchall()
-                active = False if active[0][0] == "False" else True
+                active = False if (active[0][0] == "False" or active[0][0] == False or active[0][0] == "0" or active[0][0] == 0) else True
                 active = not active
 
                 sql_query = f"UPDATE user SET active = '{active}' WHERE u_id = {user_id};"
