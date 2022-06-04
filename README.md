@@ -82,6 +82,6 @@ The same can be found [here](http://localhost:8080/).
 
 ## Video Demonstration:
 
-The video demonstration (walkthrough) on how to use the website, can be found [here](video_link). 
+The video demonstration (walkthrough) on how to use the website, can be found [here](https://drive.google.com/drive/folders/16zL1ZzIMbvp6CpXDmkSKIUOIMvbfWlWp?usp=sharing). 
 
 
