@@ -719,7 +719,6 @@ def settings():
             cur.execute(sql_query)
             user_information = cur.fetchall()
 
-            print(user_information)
             
             sql_query = f"SELECT course_id, course_name FROM course;"
             cur.execute(sql_query)
