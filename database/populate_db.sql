@@ -1,5 +1,5 @@
 --user 
-INSERT INTO user (u_id, user_full_name, user_email, user_pwd, user_type, user_a1, user_a2, user_a3) VALUES (1, 'Admin', 'admin1@uchicago.edu', '@password1', 'Admin', 'a', 'b', 'c', "True");
+INSERT INTO user (u_id, user_full_name, user_email, user_pwd, user_type, user_a1, user_a2, user_a3, active) VALUES (1, 'Admin', 'admin1@uchicago.edu', '@password1', 'Admin', 'a', 'b', 'c', "True");
 INSERT INTO user (u_id, user_full_name, user_email, user_pwd, user_type, user_a1, user_a2, user_a3) VALUES (2, 'Mike Smith', 'msmith@uchicago.edu', '@password2', 'Student', 'a', 'b', 'c');
 INSERT INTO user (u_id, user_full_name, user_email, user_pwd, user_type, user_a1, user_a2, user_a3) VALUES (3, 'Elice Smith', 'esmith@uchicago.edu', '@password3', 'Teacher', 'a', 'b', 'c');
 INSERT INTO user (u_id, user_full_name, user_email, user_pwd, user_type, user_a1, user_a2, user_a3) VALUES (4, 'Laura Smith', 'lsmith@uchicago.edu', '@password4', 'Student', 'a', 'b', 'c');

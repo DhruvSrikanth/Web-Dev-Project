@@ -715,10 +715,16 @@ def settings():
 
     if state == "Admin":
         if request.method == 'GET':
-            sql_query = f"SELECT u_id, user_full_name, user_email, active FROM user;"
+            sql_query = f"SELECT u_id, user_full_name, user_email, active, user_type FROM user;"
             cur.execute(sql_query)
             user_information = cur.fetchall()
 
+            for i in range(len(user_information)):
+                user_information[i] = list(user_information[i])
+                if user_information[i][3] == "True":
+                    user_information[i][3] = 'Active'
+                else:
+                    user_information[i][3] = 'Inactive'
             
             sql_query = f"SELECT course_id, course_name FROM course;"
             cur.execute(sql_query)
@@ -726,8 +732,49 @@ def settings():
 
             return render_template('settings/settings.html', user_information = user_information, courses = courses)
         else:
+            action_desc = request.form.get('action_desc')
+            user_id = int(request.form.get('user_id'))
+            if action_desc == 'toggle':
+                sql_query = f"SELECT active FROM user WHERE u_id = '{user_id}';"
+                cur.execute(sql_query)
+                active = cur.fetchall()
+                active = False if active[0][0] == "False" else True
+                active = not active
 
-            return render_template('settings/settings.html')
+                sql_query = f"UPDATE user SET active = '{active}' WHERE u_id = {user_id};"
+                cur.execute(sql_query)
+                conn.commit()
+            else:
+                course_id = int(request.form.get('courses'))
+
+                sql_query = f"SELECT course_id FROM user_course WHERE u_id = '{user_id}';"
+                cur.execute(sql_query)
+                user_courses = cur.fetchall()
+                user_courses = [int(x[0]) for x in user_courses]
+                if course_id not in user_courses:
+                    sql_query = f"INSERT INTO user_course (u_id, course_id) VALUES ('{user_id}', '{course_id}');"
+                    cur.execute(sql_query)
+                    conn.commit()
+
+
+
+
+            sql_query = f"SELECT u_id, user_full_name, user_email, active, user_type FROM user;"
+            cur.execute(sql_query)
+            user_information = cur.fetchall()
+
+            for i in range(len(user_information)):
+                user_information[i] = list(user_information[i])
+                if user_information[i][3] == "True":
+                    user_information[i][3] = 'Active'
+                else:
+                    user_information[i][3] = 'Inactive'
+            
+            sql_query = f"SELECT course_id, course_name FROM course;"
+            cur.execute(sql_query)
+            courses = cur.fetchall()
+
+            return render_template('settings/settings.html', user_information = user_information, courses = courses)
 
 
 # Helper Functions

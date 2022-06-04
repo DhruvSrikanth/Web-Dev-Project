@@ -58,25 +58,42 @@
                                 <td>{{user[2]}}</td> 
                                 <td>{{user[3]}}</td>
                                 <td>
-                                    <form action="/settings" method="POST">
-                                        <input type="hidden" name="user_id" value="{{user[0]}}">
-                                        <input type="submit" id="toggle_status" value="Toggle Active/Inactive"></input>
-                                    </form>
+                                    {% if user[4] == "Admin" %}
+                                        <p>
+                                            Admins cannot deactivate other admins!
+                                        </p>
+                                    {% else %}
+                                        <form action="/settings" method="POST">
+                                            <input type="hidden" name="user_id" value="{{user[0]}}">
+                                            <input type="hidden" name="action_desc" value="toggle">
+                                            <input type="submit" id="toggle_status" name="toggle_status" value="Toggle Active/Inactive"></input>
+                                        </form>
+                                    {% endif %}
                                 </td>
                                 <td>
-                                    <form action="/settings" method="POST">
-                                        <input type="hidden" name="user_id" value="{{user[0]}}">
-
-                                        <label class="course">Course:</label><br/><br/>
-                                        <select id="courses" name="courses">
-                                            {% for course in courses %}
-                                                <option value="{{course[0]}}">
-                                                    {{course[1]}}
-                                                </option>
-                                            {% endfor %}
-                                        </select><br/><br/>
-                                        <input type="submit" id="add_user" value="Add User To Class"></input>
-                                    </form>
+                                    {% if user[4] == "Teacher" %}
+                                        <p>
+                                            A teacher can be added to course in Courses page!
+                                        </p>
+                                    {% elif user[4] == "Admin" %}
+                                        <p>
+                                            An admin cannot be added to a course!
+                                        </p>
+                                    {% else %}
+                                        <form action="/settings" method="POST">
+                                            <input type="hidden" name="user_id" value="{{user[0]}}">
+                                            <input type="hidden" name="action_desc" value="add_class">
+                                            <label class="course">Course:</label><br/><br/>
+                                            <select id="courses" name="courses">
+                                                {% for course in courses %}
+                                                    <option value="{{course[0]}}">
+                                                        {{course[1]}}
+                                                    </option>
+                                                {% endfor %}
+                                            </select><br/><br/>
+                                            <input type="submit" id="add_user" value="Add User To Class"></input>
+                                        </form>
+                                    {% endif %}
                                 </td>
                             </tr>
                             
