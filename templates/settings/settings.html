@@ -25,18 +25,6 @@
                 <h3> 
                     Settings
                 </h3>
-
-                <div class="grid-element">
-                    <h4>
-                        Registered Users (Active/Inactive):
-                    </h4>
-                    <button type="button">Active Users</button>
-                    <button type="button">Inactive Users</button>
-                    <ul>
-
-                    </ul>
-                </div>
-
                 <div class="form">
                     <form method="GET">
                         <h4>
@@ -47,6 +35,57 @@
                             <input type="submit" value="Search"></input>
                     </form>
                 </div>
+
+                <div class="grid-element">
+                    <h4>
+                        Registered Users:
+                    </h4>
+                
+                    <table>
+                        <tr>
+                            <th> User ID</th>
+                            <th> Full Name</th>
+                            <th> Email</th>
+                            <th> Status</th>
+                            <th> Edit Status</th>
+                            <th> Add To Class</th>
+                        </tr>
+                        {% for user in user_information %}
+                            
+                            <tr>
+                                <td>{{user[0]}}</td>
+                                <td>{{user[1]}}</td>
+                                <td>{{user[2]}}</td> 
+                                <td>{{user[3]}}</td>
+                                <td>
+                                    <form action="/settings" method="POST">
+                                        <input type="hidden" name="user_id" value="{{user[0]}}">
+                                        <input type="submit" id="toggle_status" value="Toggle Active/Inactive"></input>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="/settings" method="POST">
+                                        <input type="hidden" name="user_id" value="{{user[0]}}">
+
+                                        <label class="course">Course:</label><br/><br/>
+                                        <select id="courses" name="courses">
+                                            {% for course in courses %}
+                                                <option value="{{course[0]}}">
+                                                    {{course[1]}}
+                                                </option>
+                                            {% endfor %}
+                                        </select><br/><br/>
+                                        <input type="submit" id="add_user" value="Add User To Class"></input>
+                                    </form>
+                                </td>
+                            </tr>
+                            
+                        {% endfor %} 
+                    </table>
+                    
+                </div>
+
+        
 
                 <div class="grid-element">
                     <ul>

@@ -714,7 +714,21 @@ def settings():
     global user_id_
 
     if state == "Admin":
-        return render_template('settings/settings.html')
+        if request.method == 'GET':
+            sql_query = f"SELECT u_id, user_full_name, user_email, active FROM user;"
+            cur.execute(sql_query)
+            user_information = cur.fetchall()
+
+            print(user_information)
+            
+            sql_query = f"SELECT course_id, course_name FROM course;"
+            cur.execute(sql_query)
+            courses = cur.fetchall()
+
+            return render_template('settings/settings.html', user_information = user_information, courses = courses)
+        else:
+
+            return render_template('settings/settings.html')
 
 
 # Helper Functions
