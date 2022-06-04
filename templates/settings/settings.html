@@ -10,6 +10,65 @@
         <link rel="stylesheet" href="../../static/css/page_template.css">
     </head>
     <body>
+        <script>
+            function filterActive() {
+                var table = document.getElementById("user_table");
+                var rows = table.getElementsByTagName('tr');
+                for (var i = 1; i < rows.length; i++) {
+                    var status = rows[i].getElementsByTagName("TD")[3];
+                    if (status.innerHTML.toLowerCase() == "inactive"){
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+
+            function filterInactive() {
+                var table = document.getElementById("user_table");
+                var rows = table.getElementsByTagName('tr');
+                for (var i = 1; i < rows.length; i++) {
+                    var status = rows[i].getElementsByTagName("TD")[3];
+                    if (status.innerHTML.toLowerCase() == "active"){
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+
+            function filterReset() {
+                var table = document.getElementById("user_table");
+                var rows = table.getElementsByTagName('tr');
+                for (var i = 1; i < rows.length; i++) {
+                    rows[i].style.display = "";
+                }
+            }
+
+            function searchNameEmail() {
+                var search_value = document.getElementById("user_search").value;
+                var table = document.getElementById("user_table");
+                var rows = table.getElementsByTagName('tr');
+                for (var i = 1; i < rows.length; i++) {
+                    var name = rows[i].getElementsByTagName("TD")[1];
+                    var email = rows[i].getElementsByTagName("TD")[2];
+
+                    if (search_value.toLowerCase().includes("@")) {
+                        // Search by email
+                        if (email.innerHTML.toLowerCase().includes(search_value.toLowerCase())) {
+                            rows[i].style.display = "";
+                        } else {
+                            rows[i].style.display = "none";
+                        }
+                    }
+                    else {
+                        // Search by name
+                        if (name.innerHTML.toLowerCase().includes(search_value.toLowerCase())) {
+                            rows[i].style.display = "";
+                        } else {
+                            rows[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+
+        </script>
         <div class="grid-container">
             <div class="grid-element-header">
                 <h1>Canvas</h1>
@@ -25,15 +84,27 @@
                 <h3> 
                     Settings
                 </h3>
-                <div class="form">
-                    <form method="GET">
-                        <h4>
-                            User Search:
-                        </h4>
-                            <label for="user_search">Name/Email</label><br/>
-                            <input type="text" id="user_search" name="user_search" required><br/><br/>
-                            <input type="submit" value="Search"></input>
-                    </form>
+
+                <h4>
+                    User Search:
+                </h4>
+
+                <div class="search_box">
+                    <input type="text" id="user_search" placeholder="Use @ for email search">
+                    <button onclick="searchNameEmail()">Search</button>
+                    <!-- <form>
+                        <label for="user_search">Name/Email</label><br/>
+                        <input type="text" id="user_search" name="user_search" required><br/><br/>
+                        <input type="submit" value="Search" onclick="searchNameEmail()"></input>
+                    </form> -->
+                </div>
+                <br>
+
+
+                <div class="filter_search_buttons">
+                    <button onclick="filterActive()">Filter by Active Users</button>
+                    <button onclick="filterInactive()">Filter by Inactive Users</button><br><br>
+                    <button onclick="filterReset()">Reset Table</button>
                 </div>
 
                 <div class="grid-element">
@@ -41,7 +112,7 @@
                         Registered Users:
                     </h4>
                 
-                    <table>
+                    <table id="user_table">
                         <tr>
                             <th> User ID</th>
                             <th> Full Name</th>
