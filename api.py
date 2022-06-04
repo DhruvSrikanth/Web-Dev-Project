@@ -767,6 +767,18 @@ def settings():
                     cur.execute(sql_query)
                     conn.commit()
 
+                    # Get all assignments for the course
+                    sql_query = f"SELECT assignment_id FROM course_assignment WHERE course_id = '{course_id}';"
+                    cur.execute(sql_query)
+                    assignments_ids = cur.fetchall()
+                    assignments_ids = [int(x[0]) for x in assignments_ids]
+
+                    for assignment_id in assignments_ids:
+                        sql_query = f"INSERT INTO user_assignment (u_id, assignment_id) VALUES ('{user_id}', '{assignment_id}');"
+                        cur.execute(sql_query)
+                        conn.commit()
+                    
+
 
 
 
