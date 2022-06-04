@@ -21,9 +21,11 @@ The backend was implemented using `Flask` API. This API utilizes the `REST` API 
 
 Once the above requirements are met, install the required `python` dependencies - 
 
-```
-pip3 install -r requirements.txt
-```
+- flask
+- datetime
+- pytz
+- re
+- sqlite3
 
 ## Database Instructions (For running a new instance of the database):
 
