@@ -110,3 +110,21 @@ a {
     color:rgb(0, 0, 0);
 }
 
+@media only screen and (min-width: 768px) {
+    .grid-element-main {
+        background-color: rgb(255, 255, 255);
+    }
+  }
+
+@media only screen and (max-width: 767px) {
+    .grid-element-main {
+        background-color: rgb(255, 255, 255);
+      }
+    }
+
+@media only screen and (max-width: 767px)
+    and (orientation: portrait) {
+        .grid-element-main {
+            background-color: rgb(255, 255, 255);
+          }
+    }

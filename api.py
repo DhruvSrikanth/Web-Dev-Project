@@ -45,77 +45,85 @@ def login():
 
                 global state
                 state = result[0][4]
-                
-                if state == "Student":
-                    # Get assignments for user
-                    sql_query = f"SELECT * FROM assignment JOIN user_assignment ON assignment.assignment_id = user_assignment.assignment_id WHERE u_id = '{user_id_}';"
-                    cur.execute(sql_query)
-                    user_assignments = cur.fetchall()
 
-                    tz = timezone(config['timezone'])
-                    time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
-                    time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
-                    time_now_plus_3days = time_now + timedelta(days=3)
 
-                    # Assignments that are due in 3 days
-                    assignments_to_do = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') >= time_now and datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') <= time_now_plus_3days and not bool(x[8]), user_assignments))
+                sql_query = f"SELECT active FROM user WHERE u_id = '{user_id_}';"
+                cur.execute(sql_query)
+                active_status = cur.fetchall()
+                active_status = active_status[0][0]
+                if active_status == "False" or active_status == 0 or active_status == False or active_status == "0":
+                    return render_template('login/login.html')
+                else:     
+                    if state == "Student":
+                        # Get assignments for user
+                        sql_query = f"SELECT * FROM assignment JOIN user_assignment ON assignment.assignment_id = user_assignment.assignment_id WHERE u_id = '{user_id_}';"
+                        cur.execute(sql_query)
+                        user_assignments = cur.fetchall()
 
-                    # Assignments that are after 3 days
-                    assignments_upcoming = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') > time_now_plus_3days and not bool(x[8]), user_assignments))
+                        tz = timezone(config['timezone'])
+                        time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+                        time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
+                        time_now_plus_3days = time_now + timedelta(days=3)
 
-                    # passed due assignments
-                    assignments_past = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') < time_now, user_assignments))
+                        # Assignments that are due in 3 days
+                        assignments_to_do = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') >= time_now and datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') <= time_now_plus_3days and not bool(x[8]), user_assignments))
 
-                    return render_template('dashboard/dashboard_student.html', assignments_to_do=assignments_to_do, assignments_upcoming=assignments_upcoming, assignments_past=assignments_past)
-                elif state == "Teacher":
-                    # Get assigntments that need grading (past)
-                    sql_query = f"SELECT course_name, assignment_title, user_full_name, assignment_due_date FROM assignment JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id JOIN user_assignment ON user_assignment.assignment_id = course_assignment.assignment_id JOIN course ON course.course_id = course_assignment.course_id JOIN user ON user.u_id = user_assignment.u_id WHERE course_teacher = '{user_id_}' AND assignment_grade = 'Not graded yet!';"
-                    cur.execute(sql_query)
-                    assignments_to_grade = cur.fetchall()
+                        # Assignments that are after 3 days
+                        assignments_upcoming = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') > time_now_plus_3days and not bool(x[8]), user_assignments))
 
-                    tz = timezone(config['timezone'])
-                    time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
-                    time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
+                        # passed due assignments
+                        assignments_past = list(filter(lambda x: datetime.strptime(x[5], '%Y-%m-%d %H:%M:%S') < time_now, user_assignments))
 
-                    
+                        return render_template('dashboard/dashboard_student.html', assignments_to_do=assignments_to_do, assignments_upcoming=assignments_upcoming, assignments_past=assignments_past)
+                    elif state == "Teacher":
+                        # Get assigntments that need grading (past)
+                        sql_query = f"SELECT course_name, assignment_title, user_full_name, assignment_due_date FROM assignment JOIN course_assignment ON course_assignment.assignment_id = assignment.assignment_id JOIN user_assignment ON user_assignment.assignment_id = course_assignment.assignment_id JOIN course ON course.course_id = course_assignment.course_id JOIN user ON user.u_id = user_assignment.u_id WHERE course_teacher = '{user_id_}' AND assignment_grade = 'Not graded yet!';"
+                        cur.execute(sql_query)
+                        assignments_to_grade = cur.fetchall()
 
-                    # passed due assignments
-                    assignments_to_grade = list(filter(lambda x: datetime.strptime(x[3], '%Y-%m-%d %H:%M:%S') < time_now, assignments_to_grade))
-                    course_names = sorted(list(set([x[0] for x in assignments_to_grade])))
+                        tz = timezone(config['timezone'])
+                        time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+                        time_now = datetime.strptime(time_now, '%Y-%m-%d %H:%M:%S')
 
-                    assignments_to_grade_new = {}
-                    assignments_to_grade_new = {x:[] for x in course_names}
-                    for x in assignments_to_grade:
-                        assignments_to_grade_new[x[0]].append(x[1:])
+                        
 
-                    for x in assignments_to_grade_new:
-                        assignments_to_grade_new[x] = sorted(assignments_to_grade_new[x], key=lambda x: x[0])
-                    
-                    assignments_to_grade_final = []
-                    for x in assignments_to_grade_new:
-                        for y in assignments_to_grade_new[x]:
-                            element = [x]
-                            element.extend(list(y))
-                            assignments_to_grade_final.append(element)
+                        # passed due assignments
+                        assignments_to_grade = list(filter(lambda x: datetime.strptime(x[3], '%Y-%m-%d %H:%M:%S') < time_now, assignments_to_grade))
+                        course_names = sorted(list(set([x[0] for x in assignments_to_grade])))
 
-                    return render_template('dashboard/dashboard_teacher.html', assignments_to_grade=assignments_to_grade_final, course_names=course_names)
-                elif state == "Admin":
-                    sql_query = f"SELECT * FROM user WHERE user_type = 'Student' AND active = 'True';"
-                    cur.execute(sql_query)
-                    students = cur.fetchall()
-                    num_active_students = len(students)
+                        assignments_to_grade_new = {}
+                        assignments_to_grade_new = {x:[] for x in course_names}
+                        for x in assignments_to_grade:
+                            assignments_to_grade_new[x[0]].append(x[1:])
 
-                    sql_query = f"SELECT * FROM course;"
-                    cur.execute(sql_query)
-                    courses = cur.fetchall()
-                    num_courses = len(courses)
+                        for x in assignments_to_grade_new:
+                            assignments_to_grade_new[x] = sorted(assignments_to_grade_new[x], key=lambda x: x[0])
+                        
+                        assignments_to_grade_final = []
+                        for x in assignments_to_grade_new:
+                            for y in assignments_to_grade_new[x]:
+                                element = [x]
+                                element.extend(list(y))
+                                assignments_to_grade_final.append(element)
 
-                    sql_query = f"SELECT * FROM user WHERE user_type = 'Teacher' AND active = 'True';"
-                    cur.execute(sql_query)
-                    teachers = cur.fetchall()
-                    num_active_teachers = len(teachers)
+                        return render_template('dashboard/dashboard_teacher.html', assignments_to_grade=assignments_to_grade_final, course_names=course_names)
+                    elif state == "Admin":
+                        sql_query = f"SELECT * FROM user WHERE user_type = 'Student' AND active = 'True';"
+                        cur.execute(sql_query)
+                        students = cur.fetchall()
+                        num_active_students = len(students)
 
-                    return render_template('dashboard/dashboard_admin.html', num_active_students=num_active_students, num_active_teachers=num_active_teachers, num_courses=num_courses)
+                        sql_query = f"SELECT * FROM course;"
+                        cur.execute(sql_query)
+                        courses = cur.fetchall()
+                        num_courses = len(courses)
+
+                        sql_query = f"SELECT * FROM user WHERE user_type = 'Teacher' AND active = 'True';"
+                        cur.execute(sql_query)
+                        teachers = cur.fetchall()
+                        num_active_teachers = len(teachers)
+
+                        return render_template('dashboard/dashboard_admin.html', num_active_students=num_active_students, num_active_teachers=num_active_teachers, num_courses=num_courses)   
             else:
                 return render_template('login/login.html')            
         except Exception as e:
